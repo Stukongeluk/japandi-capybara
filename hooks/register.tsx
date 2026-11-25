@@ -6,6 +6,33 @@ import { ART_COLUMNS, ART_ROWS, artCells } from './terminal-art.ts'
 
 const ART_FRAME_MS = 500
 let bandRequestId: string | undefined
+// Whether a desktop or mobile app has drawn the room; until then (as in a
+// terminal) there is no backdrop worth redrawing.
+let backdropDrawn = false
+// Machine readings wait for their own, slower redraw.
+const STATS_REDRAW_MS = 30_000
+let statsDirty = false
+let lastStatsRedraw = 0
+// The room as last sent, built with the clock held still, to skip redraws
+// that would change nothing.
+let lastScene = ''
+
+const step = (n: number | undefined, by: number) => (n === undefined ? undefined : Math.round(n / by) * by)
+
+// Rounds readings to the steps the room shows them in.
+function quantize(p: Partial<Stats>): Partial<Stats> {
+  return {
+    cpu: step(p.cpu, 5),
+    ramUsed: step(p.ramUsed, 0.5),
+    ramTotal: p.ramTotal,
+    gpu: p.gpu && {
+      util: step(p.gpu.util, 5)!,
+      memUsed: step(p.gpu.memUsed, 256)!,
+      memTotal: p.gpu.memTotal,
+      temp: step(p.gpu.temp, 2),
+    },
+  }
+}
 let artFrame = 0
 
 const pct = (n: number) => `${Math.round(n)}%`
@@ -41,20 +68,22 @@ function bandLines(s: Stats): [string, string, string] {
 }
 
 // One long-lived process that prints a JSON line of machine stats every few
-// seconds. On Windows it is PowerShell. CIM classes are used so the names don't change with the Windows
+// seconds. On Windows it is PowerShell, with one CIM session reused for every
+// reading (about four times cheaper than opening one each time). CIM classes are used so the names don't change with the Windows
 // language; nvidia-smi is read when it is installed.
 const STATS_SCRIPT = `
 $ErrorActionPreference = 'SilentlyContinue'
 $smi = (Get-Command nvidia-smi -ErrorAction SilentlyContinue).Source
+$cim = New-CimSession
 while ($true) {
-  $cpu = (Get-CimInstance Win32_PerfFormattedData_PerfOS_Processor -Filter "Name='_Total'").PercentProcessorTime
-  $os = Get-CimInstance Win32_OperatingSystem
+  $cpu = (Get-CimInstance -CimSession $cim Win32_PerfFormattedData_PerfOS_Processor -Filter "Name='_Total'").PercentProcessorTime
+  $os = Get-CimInstance -CimSession $cim Win32_OperatingSystem
   $tot = [double]$os.TotalVisibleMemorySize; $free = [double]$os.FreePhysicalMemory
   $g = ''
   if ($smi) { $g = (& $smi --query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu --format=csv,noheader,nounits | Select-Object -First 1) }
   $o = [ordered]@{ cpu = [int]$cpu; ramUsed = [math]::Round(($tot - $free) / 1MB, 1); ramTotal = [math]::Round($tot / 1MB, 1); gpu = "$g" }
   [Console]::Out.WriteLine(($o | ConvertTo-Json -Compress))
-  Start-Sleep -Seconds 8
+  Start-Sleep -Seconds 10
 }
 `
 
@@ -88,7 +117,7 @@ while :; do
     done
   fi
   printf '{"cpu":%s,%s,"gpu":"%s"}\n' "$cpu" "$mem" "$gpu"
-  sleep 7
+  sleep 9
 done
 `
 
@@ -109,7 +138,7 @@ while :; do
     gpu="$util, $((gmem / 1048576)), $((total / 1048576)), "
   fi
   printf '{"cpu":%s,"ramUsed":%s,"ramTotal":%s,"gpu":"%s"}\n' "$cpu" "$used" "$ram" "$gpu"
-  sleep 7
+  sleep 9
 done
 `
 
@@ -356,13 +385,29 @@ export const register: Register = on => {
     // unchanged, so only the room moves on.
     let flip = false
     let busy = false
+    //
+    // A redraw repaints the whole room, so it is only sent when the room would
+    // look different: the scene is built with the clock held still and
+    // compared with the last one sent.
     $.clock.every(REDRAW_MS, () => {
+      // Machine readings move the room at most every STATS_REDRAW_MS; what
+      // Claude is doing (the scroll, the samurai) within REDRAW_MS.
+      const now = Date.now()
+      if (statsDirty && now - lastStatsRedraw >= STATS_REDRAW_MS) {
+        statsDirty = false
+        lastStatsRedraw = now
+        dirty = true
+      }
       if (dirty && !busy) {
         dirty = false
-        busy = true
-        flip = !flip
         // The terminal's band redraws the ordinary way.
         if (bandRequestId !== undefined) $.ui.invalidate('ui.render')
+        if (!backdropDrawn) return
+        const scene = buildScene(stats, 0)
+        if (scene === lastScene) return
+        lastScene = scene
+        busy = true
+        flip = !flip
         const backdrop = { ...(look.backdrop as { scene: string; glass?: object }), scene: flip ? 'japandi-room-b' : 'japandi-room' }
         void $.theme
           .set({ ...look, backdrop } as ThemeSetArgs)
@@ -410,8 +455,13 @@ export const register: Register = on => {
             const parsed = parseStats(buffer.slice(0, nl).trim())
             buffer = buffer.slice(nl + 1)
             if (parsed) {
-              stats = { ...stats, ...parsed }
-              dirty = true
+              // Readings are rounded to what the room can show, so a CPU going
+              // from 12% to 13% doesn't cost a redraw.
+              const merged = { ...stats, ...quantize(parsed) }
+              if (JSON.stringify(merged) !== JSON.stringify(stats)) {
+                stats = merged
+                statsDirty = true
+              }
             }
             nl = buffer.indexOf('\n')
           }
@@ -510,6 +560,8 @@ export const register: Register = on => {
     if (!String(e.props.scene).startsWith('japandi-room')) {
       return next(e)
     }
+    backdropDrawn = true
+    lastScene = buildScene(stats, 0)
 
     const { Svg } = $.ui.resolve(e)
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1
+
+Lighter on your computer:
+
+- **Fewer redraws.** Machine readings move the room at most every 30 seconds, rounded to the steps the room shows; what Claude is doing still shows within 5 seconds. A redraw that would change nothing is skipped, and a terminal no longer redraws a background it never shows.
+- **No live blur.** The bath steam is a soft gradient instead of a blur filter recalculated every frame; it looks the same.
+- **No hidden animations.** Stars and fireflies left from the night sky, invisible in the light theme, are gone.
+- **Lighter readings.** On Windows one system connection is reused for every reading (about four times less CPU each), and readings come every 10 seconds on every system.
+
 ## 0.4.0
 
 - **The theme in the terminal.** The terminal draws no themes, so there a band above the prompt shows a small pixel-art capybara in its tub beside three lines of the room's readings: what Claude is doing with its task progress; RAM, CPU, GPU, usage limit and context; and the limit's reset time with any background work.

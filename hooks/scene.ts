@@ -17,7 +17,7 @@ export const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 
   </linearGradient>
   <clipPath id="moonwin"><circle cx="270" cy="300" r="165"/></clipPath>
   <clipPath id="tubclip"><rect x="0" y="-200" width="400" height="300"/></clipPath>
-  <filter id="steamsoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+  <radialGradient id="steamsoft"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/><stop offset="60%" stop-color="#ffffff" stop-opacity="0.6"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
 </defs>
 <style>
   .wall { fill: #f5ede0; }
@@ -65,7 +65,7 @@ export const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 
   .band { fill: #8a6a4a; }
   .water { fill: #b8d4d0; }
   .water-l { fill: #d3e6e3; }
-  .steam { fill: #ffffff; opacity: 0.6; filter: url(#steamsoft); }
+  .steam { fill: url(#steamsoft); opacity: 0.75; }
   .towel { fill: #f3efe6; }
   .lamp { fill: #fbe3b0; }
   .lamp-r { stroke: #a58b6a; fill: none; }
@@ -268,10 +268,6 @@ export const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 
 <g class="left">
   <g clip-path="url(#moonwin)">
     <rect class="sky" x="100" y="130" width="340" height="340"/>
-    <circle class="star twinkle" cx="190" cy="210" r="2"/>
-    <circle class="star twinkle" cx="330" cy="190" r="1.6" style="animation-delay:-2s"/>
-    <circle class="star twinkle" cx="250" cy="250" r="1.4" style="animation-delay:-4s"/>
-    <circle class="star twinkle" cx="380" cy="270" r="1.8" style="animation-delay:-5.5s"/>
     <circle class="orb" cx="340" cy="230" r="34"/>
     <g class="drift"><path class="cloud" d="M120 260q14-22 38-12q16-18 40 0q22-4 24 14H120Z"/></g>
     <g class="drift2"><path class="cloud" d="M60 320q10-16 30-8q14-14 32 0q18-2 20 10H60Z"/></g>
@@ -364,12 +360,6 @@ export const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 
   </g>
 
   <!-- fireflies, seen at night -->
-  <g class="fdrift">
-    <circle class="fly" cx="150" cy="420" r="3.5"/>
-    <circle class="fly f2" cx="330" cy="470" r="3"/>
-    <circle class="fly f3" cx="90" cy="600" r="3"/>
-    <circle class="fly f4" cx="380" cy="560" r="2.6"/>
-  </g>
 </g>
 
 <!-- falling petals from the branch, drifting across the room -->
