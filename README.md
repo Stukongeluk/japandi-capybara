@@ -2,6 +2,14 @@
 
 An animated, light Japandi theme for the Claude desktop app: a sunlit room with a round window, shoji screens, a swaying bonsai, drifting sakura petals, a meditating samurai and two very relaxed capybaras. The motion borrows from hand-drawn anime: held steam frames, petal smears, a head turn with anticipation and overshoot, a dragonfly that darts with speed lines.
 
+![The room while Claude works: the samurai practises sword cuts, the scroll shows the current step and task list, the shoji glow with RAM use](docs/room-working.svg)
+
+*While Claude works: the samurai trains, the scroll follows the task list, and the room shows CPU, RAM, GPU, usage limit and context.*
+
+![The room while Claude rests: the samurai meditates beside his incense and the yuzu capybara dozes off](docs/room-resting.svg)
+
+*While Claude rests: the samurai meditates and the capybara dozes.*
+
 The room also shows what is going on, without a single gauge:
 
 | What | In the room |
@@ -14,6 +22,14 @@ The room also shows what is going on, without a single gauge:
 | Context window | The paper lantern dims as the conversation fills up |
 | What Claude is doing | A hanging scroll shows the current step, the task list and background work |
 | Working or resting | The samurai practises sword cuts while Claude works and meditates when it rests; the capybara dozes off |
+
+The bath follows your GPU temperature:
+
+| 50° — a relaxed soak | 79° — a rolling boil | 88° — time to get out |
+| :---: | :---: | :---: |
+| ![Relaxed capybara soaking with eyes closed](docs/bath-50.svg) | ![Red-faced capybara squinting in a bubbling bath](docs/bath-79.svg) | ![Wide-eyed capybara climbing halfway out of a boiling bath](docs/bath-88.svg) |
+
+The images are drawn by the theme's own code with sample figures, and they move, as the room does.
 
 It also restyles messages (washi cards with a small red seal) and adds a quiet ambience you can switch on with the speaker button in the session's title bar: a breeze, a wind chime and the bath trickling.
 
