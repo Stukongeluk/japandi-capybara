@@ -5,6 +5,7 @@
 [![Stats on Windows, macOS and Linux](https://img.shields.io/badge/stats-Windows%20%7C%20macOS%20%7C%20Linux-5d7d45)](#notes)
 [![Last commit](https://img.shields.io/github/last-commit/Stukongeluk/japandi-capybara?color=9a7652)](https://github.com/Stukongeluk/japandi-capybara/commits/main)
 [![Stars](https://img.shields.io/github/stars/Stukongeluk/japandi-capybara?style=flat&color=b07a28)](https://github.com/Stukongeluk/japandi-capybara/stargazers)
+[![MIT license](https://img.shields.io/github/license/Stukongeluk/japandi-capybara?color=3f5f7a)](LICENSE)
 
 An animated, light Japandi theme for the Claude desktop app: a sunlit room with a round window, shoji screens, a swaying bonsai, drifting sakura petals, a meditating samurai and two very relaxed capybaras. The motion borrows from hand-drawn anime: held steam frames, petal smears, a head turn with anticipation and overshoot, a dragonfly that darts with speed lines.
 
@@ -66,3 +67,7 @@ In the desktop app, where `/plugin` does not run: click **+** next to the prompt
   Without a supported GPU the room still runs, without the GPU readings.
 - The usage-limit plaque needs a Claude subscription and fills in after the first reply of a session.
 - The layout is tuned for a wide window with the sidebar open. On a tall (portrait) screen, where the chat covers the middle of the room, a narrow paper strip hangs at the right edge with every reading written top to bottom.
+
+## License
+
+[MIT](LICENSE). `hooks/make-colors.js` and `hooks/make-colors.d.ts` are the color helper from Claude Code's theme kit, included unchanged; the MIT license covers the rest of this repository.
