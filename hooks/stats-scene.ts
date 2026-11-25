@@ -9,7 +9,8 @@ import type { SessionRateLimit } from 'claude-code'
 
 import { SCENE } from './scene.ts'
 
-export type Gpu = { util: number; memUsed: number; memTotal: number; temp: number }
+/** GPU load %, memory in MiB, and temperature in °C where the system reports one. */
+export type Gpu = { util: number; memUsed: number; memTotal: number; temp?: number }
 
 export type Stats = {
   cpu?: number
@@ -362,10 +363,52 @@ function labels(s: Stats) {
   const g = s.gpu
   const gpu = g === undefined ? '' : `
     <text class="lbl lbl-k burn" x="1352" y="774" style="fill:#6b4f33">湯</text>
-    <text class="lbl lbl-v burn" x="1380" y="772" style="fill:#5a4128">GPU ${pct(g.util)} · <tspan${heatTier(g.temp) >= 2 ? ' class="hot"' : ''}>${Math.round(g.temp)}°</tspan></text>
+    <text class="lbl lbl-v burn" x="1380" y="772" style="fill:#5a4128">GPU ${pct(g.util)}${g.temp === undefined ? '' : ` · <tspan${heatTier(g.temp) >= 2 ? ' class="hot"' : ''}>${Math.round(g.temp)}°</tspan>`}</text>
     <text class="lbl lbl-s burn" x="1380" y="787" style="fill:#5a4128">${(g.memUsed / 1024).toFixed(1)} / ${(g.memTotal / 1024).toFixed(0)} GB</text>`
 
   return { plaque, cpu, ram, gpu }
+}
+
+// On a tall screen the chat covers the middle of the room, where the labels
+// sit. There, a narrow tanzaku strip hangs at the right edge of what is
+// visible, its stats written top to bottom. Hidden on wider screens.
+const RIBBON_W = 34
+function ribbon(s: Stats): string {
+  const five = s.limits.find(l => l.kind === 'five_hour')
+  const week = s.limits.find(l => l.kind === 'seven_day')
+  const ram = s.ramUsed !== undefined && s.ramTotal ? `記憶 RAM ${pct((s.ramUsed / s.ramTotal) * 100)}` : ''
+  const cpu = s.cpu !== undefined ? `香 CPU ${pct(s.cpu)}` : ''
+  const g = s.gpu
+  const gpu = g ? `湯 GPU ${pct(g.util)}${g.temp === undefined ? '' : ` ${Math.round(g.temp)}°`}` : ''
+  const limit = five || week ? `残花 ${[five && `5h ${pct(five.percentUsed)}`, week && `7d ${pct(week.percentUsed)}`].filter(Boolean).join(' ')}` : ''
+  const ctx = s.context !== undefined ? `灯 ctx ${pct(s.context)}` : ''
+  const done = s.work?.plan.filter(p => p.status === 'completed').length ?? 0
+  const total = s.work?.plan.length ?? 0
+  const now = s.work ? `今 ${cut(s.work.now, 24)}${total ? ` ${done}/${total}` : ''}` : ''
+  const col1 = [ram, cpu, gpu].filter(Boolean).join('　・　')
+  const col2 = [limit, ctx, now].filter(Boolean).join('　・　')
+  if (!col1 && !col2) return ''
+  const len = Math.max(col1.length, col2.length) * 10.5 + 40
+  // One rule per sliver of aspect ratio: the visible right edge is at 800 + 500 × aspect.
+  const rules: string[] = []
+  for (let k = 40; k >= 14; k--) {
+    const x = (800 + 500 * ((k - 1) / 40) - RIBBON_W - 6).toFixed(0)
+    rules.push(`@media (max-aspect-ratio: ${k}/40) { .ribbon { display: inline; transform: translate(${x}px, 34px); } }`)
+  }
+  return `
+<style>
+  .ribbon { display: none; }
+  .ribbon-paper { fill: #fbf5e7; stroke: #c9b79a; stroke-width: 0.8; }
+  .ribbon-text { font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif JP', serif; font-size: 10.5px; fill: #3d3026; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.5px; }
+  ${rules.join('\n  ')}
+</style>
+<g class="ribbon">
+  <rect class="scroll-rod" x="-3" y="0" width="${RIBBON_W + 6}" height="5" rx="2.5"/>
+  <rect class="ribbon-paper" x="0" y="4" width="${RIBBON_W}" height="${len.toFixed(0)}"/>
+  <rect class="hband" x="${RIBBON_W / 2 - 1}" y="${(len + 4).toFixed(0)}" width="2" height="14"/>
+  <text class="ribbon-text" x="${RIBBON_W - 10}" y="20">${esc(col1)}</text>
+  <text class="ribbon-text" x="10" y="20">${esc(col2)}</text>
+</g>`
 }
 
 function must(s: string, anchor: string | RegExp): void {
@@ -485,6 +528,9 @@ export function buildScene(s: Stats, nowSec: number): string {
   const capy = '<!-- capybara with a yuzu on its head'
   must(svg, capy)
   svg = svg.replace(capy, `${L.ram}${L.gpu}\n  ${capy}`)
+
+  const end = svg.lastIndexOf('</svg>')
+  svg = `${svg.slice(0, end)}${ribbon(s)}\n${svg.slice(end)}`
 
   return keepPhase(svg, nowSec)
 }

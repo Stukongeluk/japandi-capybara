@@ -52,6 +52,11 @@ In the desktop app, where `/plugin` does not run: click **+** next to the prompt
 ## Notes
 
 - The room is drawn in the desktop and mobile apps. The terminal does not draw themes.
-- CPU, RAM and GPU readings come from a background PowerShell process, so they work on Windows only; GPU readings need an NVIDIA card with `nvidia-smi`. Elsewhere the room still runs, without those readings.
+- CPU, RAM and GPU readings come from one small background process, chosen per system:
+  - **Windows:** PowerShell; GPU from `nvidia-smi` on NVIDIA cards.
+  - **Linux:** `/proc`; GPU from `nvidia-smi` on NVIDIA cards, or the driver's own files on AMD cards.
+  - **macOS:** `top`, `vm_stat` and `ioreg`; GPU load on Apple Silicon. macOS reports no GPU temperature, so the bath stays relaxed there.
+
+  Without a supported GPU the room still runs, without the GPU readings.
 - The usage-limit plaque needs a Claude subscription and fills in after the first reply of a session.
-- The layout is tuned for a wide window with the sidebar open.
+- The layout is tuned for a wide window with the sidebar open. On a tall (portrait) screen, where the chat covers the middle of the room, a narrow paper strip hangs at the right edge with every reading written top to bottom.

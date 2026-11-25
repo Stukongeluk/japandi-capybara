@@ -3,8 +3,8 @@ import type { Register, ThemeSetArgs, ThemeSound, ThemeStyle } from 'claude-code
 import { makeColors } from './make-colors.js'
 import { buildScene, type PlanItem, type Stats, type Work } from './stats-scene.ts'
 
-// One long-lived PowerShell that prints a JSON line of machine stats every few
-// seconds. CIM classes are used so the names don't change with the Windows
+// One long-lived process that prints a JSON line of machine stats every few
+// seconds. On Windows it is PowerShell. CIM classes are used so the names don't change with the Windows
 // language; nvidia-smi is read when it is installed.
 const STATS_SCRIPT = `
 $ErrorActionPreference = 'SilentlyContinue'
@@ -22,6 +22,60 @@ while ($true) {
 `
 
 // The backdrop is checked this often and redrawn only when something moved.
+// Linux: /proc for CPU and memory, nvidia-smi or an AMD card's sysfs for the GPU.
+const LINUX_SCRIPT = String.raw`
+snap() { awk '/^cpu /{print $2+$3+$4+$5+$6+$7+$8+$9, $5+$6}' /proc/stat; }
+prev=$(snap)
+while :; do
+  sleep 1
+  cur=$(snap)
+  set -- $prev $cur
+  dt=$(( $3 - $1 )); di=$(( $4 - $2 ))
+  if [ "$dt" -gt 0 ]; then cpu=$(( (100 * (dt - di)) / dt )); else cpu=0; fi
+  prev=$cur
+  mem=$(awk '/^MemTotal:/{t=$2} /^MemAvailable:/{a=$2} /^MemFree:/{f=$2} /^Buffers:/{b=$2} /^Cached:/{c=$2} END{if (a == "") a = f + b + c; printf "\"ramUsed\":%.1f,\"ramTotal\":%.1f", (t-a)/1048576, t/1048576}' /proc/meminfo)
+  gpu=""
+  if command -v nvidia-smi >/dev/null 2>&1; then
+    gpu=$(nvidia-smi --query-gpu=utilization.gpu,memory.used,memory.total,temperature.gpu --format=csv,noheader,nounits 2>/dev/null | head -n 1)
+  else
+    for d in /sys/class/drm/card*/device; do
+      if [ -r "$d/gpu_busy_percent" ]; then
+        u=$(cat "$d/gpu_busy_percent")
+        mu=$(( $(cat "$d/mem_info_vram_used" 2>/dev/null || echo 0) / 1048576 ))
+        mt=$(( $(cat "$d/mem_info_vram_total" 2>/dev/null || echo 0) / 1048576 ))
+        t=""
+        for h in "$d"/hwmon/hwmon*/temp1_input; do [ -r "$h" ] && t=$(( $(cat "$h") / 1000 )) && break; done
+        gpu="$u, $mu, $mt, $t"
+        break
+      fi
+    done
+  fi
+  printf '{"cpu":%s,%s,"gpu":"%s"}\n' "$cpu" "$mem" "$gpu"
+  sleep 7
+done
+`
+
+// macOS: top, vm_stat and ioreg (Apple Silicon GPU load; macOS gives no GPU temperature).
+const MAC_SCRIPT = String.raw`
+total=$(sysctl -n hw.memsize)
+ps=$(sysctl -n hw.pagesize)
+while :; do
+  cpu=$(top -l 2 -n 0 -s 1 | awk '/CPU usage/{u=$3; s=$5} END{sub(/%/,"",u); sub(/%/,"",s); printf "%d", u+s}')
+  used=$(vm_stat | awk -v ps="$ps" '/Pages active/{a=$3} /Pages wired down/{w=$4} /occupied by compressor/{c=$5} END{gsub(/[.]/,"",a); gsub(/[.]/,"",w); gsub(/[.]/,"",c); printf "%.1f", (a+w+c)*ps/1073741824}')
+  ram=$(awk -v t="$total" 'BEGIN{printf "%.1f", t/1073741824}')
+  gpu=""
+  acc=$(ioreg -r -d 1 -w 0 -c IOAccelerator 2>/dev/null)
+  util=$(printf '%s' "$acc" | grep -o '"Device Utilization %"=[0-9]*' | head -n 1 | cut -d= -f2)
+  if [ -n "$util" ]; then
+    gmem=$(printf '%s' "$acc" | grep -o '"In use system memory"=[0-9]*' | head -n 1 | cut -d= -f2)
+    [ -z "$gmem" ] && gmem=0
+    gpu="$util, $((gmem / 1048576)), $((total / 1048576)), "
+  fi
+  printf '{"cpu":%s,"ramUsed":%s,"ramTotal":%s,"gpu":"%s"}\n' "$cpu" "$used" "$ram" "$gpu"
+  sleep 7
+done
+`
+
 const REDRAW_MS = 5_000
 // Background work drops off the scroll after this long without news.
 const BACKGROUND_TTL_MS = 30 * 60_000
@@ -107,10 +161,13 @@ function updatePlan(a: Record<string, unknown>): void {
 function parseStats(line: string): Partial<Stats> | undefined {
   try {
     const raw = JSON.parse(line) as { cpu?: number; ramUsed?: number; ramTotal?: number; gpu?: string }
-    const parts = (raw.gpu ?? '').split(',').map(p => Number(p.trim()))
+    // "util, memUsed MiB, memTotal MiB, temp": temp may be empty (macOS has none).
+    const parts = (raw.gpu ?? '').split(',').map(p => p.trim())
+    const [util, memUsed, memTotal] = parts.slice(0, 3).map(Number)
+    const temp = parts[3] ? Number(parts[3]) : NaN
     const gpu =
-      parts.length >= 4 && parts.every(n => Number.isFinite(n))
-        ? { util: parts[0]!, memUsed: parts[1]!, memTotal: parts[2]!, temp: parts[3]! }
+      [util, memUsed, memTotal].every(n => n !== undefined && Number.isFinite(n))
+        ? { util: util!, memUsed: memUsed!, memTotal: memTotal!, temp: Number.isFinite(temp) ? temp : undefined }
         : undefined
     return { cpu: raw.cpu, ramUsed: raw.ramUsed, ramTotal: raw.ramTotal, gpu }
   } catch {
@@ -280,8 +337,15 @@ export const register: Register = on => {
     // The stats child lives for the session; it ends with the module.
     void (async () => {
       try {
+        // Pick the stats script for this operating system.
+        const sys = (await $.session.machine()).sysname
+        const argv = /^win|_nt|mingw|msys|cygwin/i.test(sys)
+          ? ['powershell', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', STATS_SCRIPT]
+          : /darwin/i.test(sys)
+            ? ['sh', '-c', MAC_SCRIPT]
+            : ['sh', '-c', LINUX_SCRIPT]
         const child = $.process.spawn({
-          argv: ['powershell', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-Command', STATS_SCRIPT],
+          argv,
         })
         let buffer = ''
         for await (const { stream, text } of child) {
