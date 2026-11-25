@@ -264,6 +264,17 @@
   .shiver { animation: shiver 0.7s -1000.00s ease-in-out infinite; }
   @keyframes shiver { 0%, 100% { transform: translateX(-1.5px); } 50% { transform: translateX(1.5px); } }
   .hot { fill: #b4473a !important; }
+  /* outside the round window */
+  .bird { stroke: #5a4a3c; stroke-width: 2.2; fill: none; stroke-linecap: round; }
+  .birds { opacity: 0; animation: birds 26s -1000.00s linear infinite; }
+  @keyframes birds { 0% { transform: translate(0px, 0px); opacity: 0; } 3% { opacity: 0.9; } 40% { transform: translate(240px, -20px); opacity: 0.9; } 43%, 100% { transform: translate(252px, -21px); opacity: 0; } }
+  .flap { transform-box: fill-box; transform-origin: center; animation: flap 0.9s -1000.00s ease-in-out infinite alternate; }
+  @keyframes flap { from { transform: scaleY(1); } to { transform: scaleY(0.35); } }
+  /* heavier training */
+  .dust { fill: #c9ab80; opacity: 0; transform-box: fill-box; transform-origin: center bottom; animation: dust 4.2s -1000.00s ease-out infinite; }
+  @keyframes dust { 0%, 44% { opacity: 0; transform: scale(0.4); } 50% { opacity: 0.6; transform: scale(1); } 75%, 100% { opacity: 0; transform: scale(1.8); } }
+  .speedfx { stroke: #c49a62; stroke-width: 3; stroke-linecap: round; animation: speedfx 1.9s -1000.00s ease-in-out infinite alternate; }
+  @keyframes speedfx { from { opacity: 0.35; } to { opacity: 0.75; } }
   /* sword practice */
   .blade { fill: #e4e8ea; stroke: #9aa3a8; stroke-width: 1; }
   .swing { transform-origin: 0px 0px; animation: cut 4.2s -1000.00s infinite; }
@@ -305,15 +316,15 @@
 <!-- left corner: moon window, shelf, bonsai, sakura vase -->
 <g class="left">
   <g clip-path="url(#moonwin)">
-    <rect class="sky" x="100" y="130" width="340" height="340"/>
+    <rect x="100" y="130" width="340" height="340" fill="#f7d9bb"/><g transform="translate(80 205) scale(1.7)"><g class="birds"><g transform="translate(0 0) scale(1)"><path class="bird flap" style="animation-delay:-1000.00s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(18 9) scale(0.8)"><path class="bird flap" style="animation-delay:-1000.30s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(34 -4) scale(0.9)"><path class="bird flap" style="animation-delay:-1000.60s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g></g></g>
     <circle class="star twinkle" cx="190" cy="210" r="2"/>
     <circle class="star twinkle" cx="330" cy="190" r="1.6" style="animation-delay:-1002.00s"/>
     <circle class="star twinkle" cx="250" cy="250" r="1.4" style="animation-delay:-1004.00s"/>
     <circle class="star twinkle" cx="380" cy="270" r="1.8" style="animation-delay:-1005.50s"/>
-    <circle class="orb" cx="340" cy="230" r="34"/>
+    <circle cx="340" cy="285" r="34" fill="#f2a86c"/>
     <g class="drift"><path class="cloud" d="M120 260q14-22 38-12q16-18 40 0q22-4 24 14H120Z"/></g>
     <g class="drift2"><path class="cloud" d="M60 320q10-16 30-8q14-14 32 0q18-2 20 10H60Z"/></g>
-    <path class="mtn2" d="M100 400L170 330L215 360L290 290L360 350L440 310V470H100Z"/>
+    <path class="mtn2" d="M100 400L170 330L215 360L290 290L360 350L440 310V470H100Z"/><g fill="#a88f78"><rect x="287" y="262" width="6" height="30"/><path d="M276 292h28l-4-5h-20zM279 282h22l-3-4h-16zM282 273h16l-3-4h-10zM289.5 258h1v-6h-1z"/></g>
     <path class="mtn" d="M100 430L190 380L260 410L330 370L440 420V470H100Z"/>
   </g>
   <circle class="frame-s" stroke-width="14" cx="270" cy="300" r="170"/>

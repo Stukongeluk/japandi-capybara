@@ -137,6 +137,17 @@ const STATS_CSS = `
   .shiver { animation: shiver 0.7s ease-in-out infinite; }
   @keyframes shiver { 0%, 100% { transform: translateX(-1.5px); } 50% { transform: translateX(1.5px); } }
   .hot { fill: #b4473a !important; }
+  /* outside the round window */
+  .bird { stroke: #5a4a3c; stroke-width: 2.2; fill: none; stroke-linecap: round; }
+  .birds { opacity: 0; animation: birds 26s linear infinite; }
+  @keyframes birds { 0% { transform: translate(0px, 0px); opacity: 0; } 3% { opacity: 0.9; } 40% { transform: translate(240px, -20px); opacity: 0.9; } 43%, 100% { transform: translate(252px, -21px); opacity: 0; } }
+  .flap { transform-box: fill-box; transform-origin: center; animation: flap 0.9s ease-in-out infinite alternate; }
+  @keyframes flap { from { transform: scaleY(1); } to { transform: scaleY(0.35); } }
+  /* heavier training */
+  .dust { fill: #c9ab80; opacity: 0; transform-box: fill-box; transform-origin: center bottom; animation: dust 4.2s ease-out infinite; }
+  @keyframes dust { 0%, 44% { opacity: 0; transform: scale(0.4); } 50% { opacity: 0.6; transform: scale(1); } 75%, 100% { opacity: 0; transform: scale(1.8); } }
+  .speedfx { stroke: #c49a62; stroke-width: 3; stroke-linecap: round; animation: speedfx 1.9s ease-in-out infinite alternate; }
+  @keyframes speedfx { from { opacity: 0.35; } to { opacity: 0.75; } }
   /* sword practice */
   .blade { fill: #e4e8ea; stroke: #9aa3a8; stroke-width: 1; }
   .swing { transform-origin: 0px 0px; animation: cut 4.2s infinite; }
@@ -427,6 +438,56 @@ function keepPhase(svg: string, nowSec: number): string {
     .replace(/animation: ([\w-]+) ([\d.]+)s /g, (_m, name: string, dur: string) => `animation: ${name} ${dur}s ${(-t).toFixed(2)}s `)
 }
 
+const hexToRgb = (h: string) => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16))
+function lerpHex(stops: readonly [number, string][], t: number): string {
+  let i = 0
+  while (i < stops.length - 2 && t > stops[i + 1]![0]) i++
+  const [t0, c0] = stops[i]!
+  const [t1, c1] = stops[i + 1]!
+  const f = Math.min(1, Math.max(0, (t - t0) / (t1 - t0)))
+  const a = hexToRgb(c0)
+  const b = hexToRgb(c1)
+  return `#${a.map((v, k) => Math.round(v + (b[k]! - v) * f).toString(16).padStart(2, '0')).join('')}`
+}
+
+// Morning sky with the whole limit left, sunset as it runs out.
+const SKY: readonly [number, string][] = [[0, '#f8e6cf'], [60, '#f6d3b2'], [100, '#efa98a']]
+const SUN: readonly [number, string][] = [[0, '#f6c27c'], [100, '#ec8456']]
+
+const PAGODA = `<g fill="#a88f78"><rect x="287" y="262" width="6" height="30"/><path d="M276 292h28l-4-5h-20zM279 282h22l-3-4h-16zM282 273h16l-3-4h-10zM289.5 258h1v-6h-1z"/></g>`
+const BIRDS = `<g transform="translate(80 205) scale(1.7)"><g class="birds">${[
+  [0, 0, 1],
+  [18, 9, 0.8],
+  [34, -4, 0.9],
+]
+  .map(([x, y, k], i) => `<g transform="translate(${x} ${y}) scale(${k})"><path class="bird flap" style="animation-delay:-${(i * 0.3).toFixed(1)}s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g>`)
+  .join('')}</g></g>`
+
+// The samurai's practice follows the CPU: calm, heavy (sweat and dust), all-out (speed lines).
+function training(cpu: number | undefined): { markup: string; css: string } {
+  const load = cpu ?? 0
+  const tier = load < 55 ? 0 : load < 80 ? 1 : 2
+  if (tier === 0) return { markup: TRAINING, css: '' }
+  const dur = tier === 1 ? 2.8 : 1.9
+  const dust = `<ellipse class="dust" cx="208" cy="878" rx="24" ry="8"/><ellipse class="dust" cx="318" cy="878" rx="24" ry="8"/>`
+  const lines =
+    tier === 2
+      ? [-160, -130, -100, -70, -40, -15, 200, 225]
+          .map(deg => {
+            const r = (deg * Math.PI) / 180
+            const c = Math.cos(r)
+            const sn = Math.sin(r)
+            return `M${(262 + c * 120).toFixed(0)} ${(770 + sn * 120).toFixed(0)}L${(262 + c * 215).toFixed(0)} ${(770 + sn * 215).toFixed(0)}`
+          })
+          .join('')
+      : ''
+  const behind = `${lines ? `<path class="speedfx" d="${lines}"/>` : ''}${dust}`
+  const sweat = `${DROP(282, 668, 0)}${DROP(236, 672, 1.1)}`
+  const markup = TRAINING.replace('<g class="kata">', `${behind}<g class="kata">`).replace(/<\/g><\/g>$/, `${sweat}</g></g>`)
+  const css = `  .swing, .smear-arc, .kata, .dust { animation-duration: ${dur}s !important; }\n  .smear-arc { fill: #ffffff; }\n${tier === 2 ? '  .tails { animation-duration: 1.2s !important; }\n' : ''}`
+  return { markup, css }
+}
+
 export function buildScene(s: Stats, nowSec: number): string {
   const five = s.limits.find(l => l.kind === 'five_hour')
   const ramPct = s.ramUsed !== undefined && s.ramTotal ? (s.ramUsed / s.ramTotal) * 100 : undefined
@@ -488,11 +549,25 @@ export function buildScene(s: Stats, nowSec: number): string {
     )
   }
 
+  // Outside the round window: a pagoda on the far ridge, birds crossing now and
+  // then, and a sky that runs from morning to sunset as the 5-hour limit is used.
+  const used = clamp(five?.percentUsed ?? 0)
+  const sky = '<rect class="sky" x="100" y="130" width="340" height="340"/>'
+  const orb = '<circle class="orb" cx="340" cy="230" r="34"/>'
+  const ridge = '<path class="mtn2" d="M100 400L170 330L215 360L290 290L360 350L440 310V470H100Z"/>'
+  for (const a of [sky, orb, ridge]) must(svg, a)
+  svg = svg
+    .replace(sky, `<rect x="100" y="130" width="340" height="340" fill="${lerpHex(SKY, used)}"/>${BIRDS}`)
+    .replace(orb, `<circle cx="340" cy="${(230 + used * 1.3).toFixed(0)}" r="34" fill="${lerpHex(SUN, used)}"/>`)
+    .replace(ridge, `${ridge}${PAGODA}`)
+
   // While Claude works, the samurai stands and practises sword cuts.
   if (isWorking(s.work)) {
     const zenRe = /<g class="zen">[\s\S]*?<\/g>/
     must(svg, zenRe)
-    svg = svg.replace(zenRe, TRAINING)
+    const kata = training(s.cpu)
+    svg = svg.replace(zenRe, kata.markup)
+    if (kata.css) svg = svg.replace('</style>', `${kata.css}</style>`)
     svg = svg
       .replace('<path class="tsuka" stroke-width="8" d="M470 866L520 860"/>', '')
       .replace(/<ellipse class="tsuba" cx="470"[^>]*\/>/, '')

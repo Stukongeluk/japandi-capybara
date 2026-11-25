@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.0
+
+- **Life outside the round window:** a small pagoda on the far ridge, and a flock of birds that flaps across the sky now and then.
+- **The day follows your 5-hour limit:** a pale morning sky with plenty left, warming to apricot, then a sunset as the sun sinks behind the mountains near the end. Morning returns when the limit resets.
+- **Training follows the CPU:** calm cuts under 55%; heavy training from 55% with faster cuts, sweat and dust at his feet; all-out above 80% with rapid cuts, speed lines and whipping headband tails.
+- The README's preview images show the new window.
+
 ## 0.2.1
 
 - The training samurai is drawn a third larger, so he stands taller than he sits, and his sword sweeps a wider arc.

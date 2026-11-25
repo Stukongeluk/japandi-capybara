@@ -22,10 +22,10 @@ The room also shows what is going on, without a single gauge:
 | What | In the room |
 | --- | --- |
 | RAM | Shoji panes glow warm, filling from the bottom up |
-| CPU | The samurai's incense: more smoke, rising faster |
+| CPU | The samurai's incense: more smoke, rising faster; while Claude works he trains harder, with sweat and dust from 55% and speed lines above 80% |
 | GPU load | Steam from the capybara's hinoki bath |
 | GPU temperature | The bath heats up: bubbles, a red-faced capybara, and above 83° it climbs halfway out |
-| Claude usage limit | Sakura blossoms on the branch fall onto the shelf as you use your 5-hour limit; a plaque shows 5h and 7d usage and when it resets |
+| Claude usage limit | Sakura blossoms on the branch fall onto the shelf as you use your 5-hour limit, and the sky in the round window turns from morning to sunset; a plaque shows 5h and 7d usage and when it resets |
 | Context window | The paper lantern dims as the conversation fills up |
 | What Claude is doing | A hanging scroll shows the current step, the task list and background work |
 | Working or resting | The samurai practises sword cuts while Claude works and meditates when it rests; the capybara dozes off |
