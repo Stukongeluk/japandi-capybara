@@ -318,12 +318,12 @@
 <!-- left corner: moon window, shelf, bonsai, sakura vase -->
 <g class="left">
   <g clip-path="url(#moonwin)">
-    <rect x="100" y="130" width="340" height="340" fill="#f7d9bb"/><g transform="translate(80 205) scale(1.7)"><g class="birds"><g transform="translate(0 0) scale(1)"><path class="bird flap" style="animation-delay:-1000.00s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(18 9) scale(0.8)"><path class="bird flap" style="animation-delay:-1000.30s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(34 -4) scale(0.9)"><path class="bird flap" style="animation-delay:-1000.60s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g></g></g>
+    <rect x="100" y="130" width="340" height="340" fill="#f8e1c8"/><g transform="translate(80 205) scale(1.7)"><g class="birds"><g transform="translate(0 0) scale(1)"><path class="bird flap" style="animation-delay:-1000.00s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(18 9) scale(0.8)"><path class="bird flap" style="animation-delay:-1000.30s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(34 -4) scale(0.9)"><path class="bird flap" style="animation-delay:-1000.60s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g></g></g>
     <circle class="star twinkle" cx="190" cy="210" r="2"/>
     <circle class="star twinkle" cx="330" cy="190" r="1.6" style="animation-delay:-1002.00s"/>
     <circle class="star twinkle" cx="250" cy="250" r="1.4" style="animation-delay:-1004.00s"/>
     <circle class="star twinkle" cx="380" cy="270" r="1.8" style="animation-delay:-1005.50s"/>
-    <circle cx="340" cy="285" r="34" fill="#f2a86c"/>
+    <circle cx="340" cy="250" r="34" fill="#f5b976"/>
     <g class="drift"><path class="cloud" d="M120 260q14-22 38-12q16-18 40 0q22-4 24 14H120Z"/></g>
     <g class="drift2"><path class="cloud" d="M60 320q10-16 30-8q14-14 32 0q18-2 20 10H60Z"/></g>
     <path class="mtn2" d="M100 400L170 330L215 360L290 290L360 350L440 310V470H100Z"/><g fill="#a88f78"><rect x="287" y="262" width="6" height="30"/><path d="M276 292h28l-4-5h-20zM279 282h22l-3-4h-16zM282 273h16l-3-4h-10zM289.5 258h1v-6h-1z"/></g>
@@ -337,7 +337,7 @@
     <circle class="frame" cx="270" cy="70" r="4"/>
     <rect class="plaque" x="130" y="110" width="280" height="84" rx="6"/>
     <text class="lbl lbl-k" x="270" y="138" text-anchor="middle">残花 · Claude</text>
-    <text class="lbl lbl-v" x="270" y="163" text-anchor="middle">5h 42%  ·  7d 18%</text>
+    <text class="lbl lbl-v" x="270" y="163" text-anchor="middle">5h 15%  ·  7d 18%</text>
     <text class="lbl lbl-s" x="270" y="183" text-anchor="middle">resets 14:30  ·  ctx 12%</text>
     <g class="kakejiku">
       <path class="cord" stroke-width="1.5" d="M600 100L470 136M600 100L730 136"/>
@@ -373,12 +373,12 @@
   <g class="pad p4"><path class="leaf1" d="M160 480q-4-16 16-18q10-12 26-2q18 2 16 14q-4 12-20 12h-28q-10 0-10-6Z"/></g>
 
   <!-- sakura branch in a vase -->
-  <ellipse class="fallen" cx="448" cy="686" rx="5" ry="2" transform="rotate(-30 448 686)"/><ellipse class="fallen" cx="462" cy="688" rx="5" ry="2" transform="rotate(7 462 688)"/><ellipse class="fallen" cx="372" cy="687" rx="5" ry="2" transform="rotate(-16 372 687)"/><ellipse class="fallen" cx="476" cy="686" rx="5" ry="2" transform="rotate(21 476 686)"/><ellipse class="fallen" cx="358" cy="688" rx="5" ry="2" transform="rotate(-2 358 688)"/><ellipse class="fallen" cx="441" cy="689" rx="5" ry="2" transform="rotate(-25 441 689)"/><path class="vase" d="M392 690C380 670 382 640 398 628V600H418V628C434 640 436 670 424 690Z"/>
+  <ellipse class="fallen" cx="448" cy="686" rx="5" ry="2" transform="rotate(-30 448 686)"/><ellipse class="fallen" cx="462" cy="688" rx="5" ry="2" transform="rotate(7 462 688)"/><path class="vase" d="M392 690C380 670 382 640 398 628V600H418V628C434 640 436 670 424 690Z"/>
   <g class="bloomsway">
     <path class="branch" stroke-width="4" d="M408 602C410 560 420 520 450 480C470 455 500 440 520 420"/>
     <path class="branch" stroke-width="3" d="M440 495C470 495 495 500 520 510"/>
     <path class="branch" stroke-width="2.5" d="M425 540C405 525 395 505 392 480"/>
-    <g class="bloom"><circle cx="470" cy="456" r="9"/><circle cx="518" cy="510" r="8"/><circle cx="520" cy="420" r="9"/><circle cx="392" cy="480" r="8"/><circle cx="450" cy="480" r="7"/><circle cx="500" cy="436" r="8"/><circle cx="492" cy="500" r="7"/><circle cx="404" cy="508" r="7"/></g><g class="bloom-c"><circle cx="470" cy="456" r="3"/><circle cx="518" cy="510" r="3"/><circle cx="520" cy="420" r="3"/><circle cx="392" cy="480" r="3"/><circle cx="450" cy="480" r="3"/><circle cx="500" cy="436" r="3"/><circle cx="492" cy="500" r="3"/><circle cx="404" cy="508" r="3"/></g>
+    <g class="bloom"><circle cx="470" cy="456" r="9"/><circle cx="518" cy="510" r="8"/><circle cx="520" cy="420" r="9"/><circle cx="392" cy="480" r="8"/><circle cx="450" cy="480" r="7"/><circle cx="500" cy="436" r="8"/><circle cx="492" cy="500" r="7"/><circle cx="404" cy="508" r="7"/><circle cx="535" cy="430" r="6"/><circle cx="487" cy="446" r="6"/><circle cx="462" cy="497" r="6"/><circle cx="428" cy="515" r="6"/></g><g class="bloom-c"><circle cx="470" cy="456" r="3"/><circle cx="518" cy="510" r="3"/><circle cx="520" cy="420" r="3"/><circle cx="392" cy="480" r="3"/><circle cx="450" cy="480" r="3"/><circle cx="500" cy="436" r="3"/><circle cx="492" cy="500" r="3"/><circle cx="404" cy="508" r="3"/></g>
   </g>
 
 
@@ -561,6 +561,6 @@
   <rect class="ribbon-paper" x="0" y="4" width="34" height="639"/>
   <rect class="hband" x="16" y="643" width="2" height="14"/>
   <text class="ribbon-text" x="24" y="20">記憶 RAM 59%　・　香 CPU 6%　・　湯 GPU 8% 44°</text>
-  <text class="ribbon-text" x="10" y="20">残花 5h 42% 7d 18%　・　灯 ctx 12%　・　今 Resting · waiting for y…</text>
+  <text class="ribbon-text" x="10" y="20">残花 5h 15% 7d 18%　・　灯 ctx 12%　・　今 Resting · waiting for y…</text>
 </g>
 </svg>

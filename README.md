@@ -11,7 +11,7 @@ An animated, light Japandi theme for the Claude desktop app: a sunlit room with 
 
 ![The room while Claude works: the samurai practises sword cuts, the scroll shows the current step and task list, the shoji glow with RAM use](docs/room-working.svg)
 
-*While Claude works: the samurai trains, the scroll follows the task list, and the room shows CPU, RAM, GPU, usage limit and context.*
+*While Claude works: the samurai trains (harder as the CPU works harder), the scroll follows the task list, the sky turns toward sunset as the usage limit runs down, and the room shows CPU, RAM, GPU and context.*
 
 ![The room while Claude rests: the samurai meditates beside his incense and the yuzu capybara dozes off](docs/room-resting.svg)
 
@@ -29,6 +29,18 @@ The room also shows what is going on, without a single gauge:
 | Context window | The paper lantern dims as the conversation fills up |
 | What Claude is doing | A hanging scroll shows the current step, the task list and background work |
 | Working or resting | The samurai practises sword cuts while Claude works and meditates when it rests; the capybara dozes off |
+
+The sky through the round window follows your 5-hour limit, with a pagoda on the ridge and birds passing now and then:
+
+| 10% used — morning | 55% used — afternoon | 92% used — sunset |
+| :---: | :---: | :---: |
+| ![Pale morning sky with the sun high over the mountains and a pagoda](docs/window-10.svg) | ![Warm apricot afternoon sky with the sun lower](docs/window-55.svg) | ![Orange sunset sky with the sun sinking behind the mountains](docs/window-92.svg) |
+
+While Claude works, the samurai trains as hard as your CPU:
+
+| Under 55% — calm cuts | 55–80% — heavy training | Over 80% — all out |
+| :---: | :---: | :---: |
+| ![Samurai practising a calm sword cut](docs/training-30.svg) | ![Samurai training faster, sweating, with dust at his feet](docs/training-68.svg) | ![Samurai cutting rapidly with speed lines radiating behind him](docs/training-92.svg) |
 
 The bath follows your GPU temperature:
 

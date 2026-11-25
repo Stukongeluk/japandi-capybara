@@ -1,0 +1,566 @@
+<svg width="390" height="302" xmlns="http://www.w3.org/2000/svg" viewBox="268 280 230 178" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <radialGradient id="lampglow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" class="glow-in"/>
+    <stop offset="100%" class="glow-out"/>
+  </radialGradient>
+  <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" class="beam-top"/>
+    <stop offset="100%" class="beam-bot"/>
+  </linearGradient>
+  <clipPath id="moonwin"><circle cx="270" cy="300" r="165"/></clipPath>
+  <clipPath id="tubclip"><rect x="0" y="-200" width="400" height="300"/></clipPath>
+  <filter id="steamsoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<style>
+  .wall { fill: #f5ede0; }
+  .wall-low { fill: #efe4d2; }
+  .floor { fill: #ddbd92; }
+  .plank { stroke: #cca77b; stroke-width: 2; fill: none; }
+  .skirt { fill: #bf9a6c; }
+  .frame { fill: #9a7652; }
+  .frame-s { stroke: #9a7652; fill: none; }
+  .paper { fill: #fdf6e8; }
+  .sky { fill: #f8e6cf; }
+  .mtn { fill: #d8c2ab; }
+  .mtn2 { fill: #c7ae96; }
+  .orb { fill: #f6c27c; }
+  .cloud { fill: #fdf3e6; }
+  .star { fill: #ffffff; opacity: 0; }
+  .shelf { fill: #c49a6a; }
+  .shelf-d { fill: #8f6c47; }
+  .pot { fill: #4a4f55; }
+  .pot-d { fill: #3a3e43; }
+  .trunk { fill: #6b4a35; }
+  .trunk-s { stroke: #6b4a35; fill: none; stroke-linecap: round; }
+  .leaf1 { fill: #6f8a5a; }
+  .leaf2 { fill: #86a06c; }
+  .leaf3 { fill: #5c7549; }
+  .moss { fill: #7d9460; }
+  .vase { fill: #d9cdb8; }
+  .branch { stroke: #5a4030; fill: none; stroke-linecap: round; }
+  .bloom { fill: #f2c6cf; }
+  .bloom-c { fill: #d98d9c; }
+  .petal { fill: #f2c6cf; }
+  .smear { stroke: #f2c6cf; fill: none; stroke-linecap: round; }
+  .capy { fill: #a5774c; }
+  .capy-d { fill: #8a5f3a; }
+  .capy-l { fill: #b98a5c; }
+  .snout { fill: #7a5233; }
+  .ink { fill: #2b2119; }
+  .ink-s { stroke: #2b2119; fill: none; stroke-linecap: round; }
+  .blush { fill: #d99a7a; opacity: 0.45; }
+  .yuzu { fill: #e8b13a; }
+  .yuzu-l { fill: #f3cc63; }
+  .leaf-y { fill: #5f7d45; }
+  .tub { fill: #d8b98a; }
+  .tub-d { fill: #c4a272; }
+  .band { fill: #8a6a4a; }
+  .water { fill: #b8d4d0; }
+  .water-l { fill: #d3e6e3; }
+  .steam { fill: #ffffff; opacity: 0.6; filter: url(#steamsoft); }
+  .towel { fill: #f3efe6; }
+  .lamp { fill: #fbe3b0; }
+  .lamp-r { stroke: #a58b6a; fill: none; }
+  .cord { stroke: #6b5440; fill: none; }
+  .glow-in { stop-color: #ffd98f; stop-opacity: 0.4; }
+  .glow-out { stop-color: #ffd98f; stop-opacity: 0; }
+  .beam-top { stop-color: #fff0c8; stop-opacity: 0.7; }
+  .beam-bot { stop-color: #fff0c8; stop-opacity: 0; }
+  .fly { fill: #fff3c4; opacity: 0; }
+  .df-body { fill: #4f6f78; }
+  .df-wing { fill: #dfeef0; opacity: 0.7; }
+  .speed { stroke: #8a6a4a; fill: none; stroke-linecap: round; opacity: 0; }
+  .mat { fill: #e3d4ad; }
+  .mat-l { stroke: #c4b38e; fill: none; }
+
+
+  /* gentle drifts */
+  .drift { animation: drift 60s -1000.00s linear infinite; }
+  .drift2 { animation: drift 90s -1000.00s linear infinite; animation-delay:-1040.00s; }
+  @keyframes drift { from { transform: translateX(-160px); } to { transform: translateX(360px); } }
+
+  .beams { animation: beams 14s -1000.00s ease-in-out infinite; }
+  @keyframes beams { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+
+  .lampswing { transform-box: view-box; transform-origin: 1000px 0px; animation: swing 9s -1000.00s ease-in-out infinite; }
+  @keyframes swing { 0%, 100% { transform: rotate(-1.2deg); } 50% { transform: rotate(1.2deg); } }
+
+  .glowpulse { animation: glow 6s -1000.00s ease-in-out infinite; }
+  @keyframes glow { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+
+  .twinkle { animation: twinkle 7s -1000.00s ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+  /* bonsai: pads sway with follow-through, each a beat behind the last */
+  .pad { transform-box: fill-box; transform-origin: 30% 90%; animation: sway 8s -1000.00s cubic-bezier(.45,0,.35,1) infinite; }
+  .pad.p2 { animation-delay:-1000.50s; }
+  .pad.p3 { animation-delay:-1001.00s; }
+  .pad.p4 { animation-delay:-1001.50s; }
+  @keyframes sway { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.8deg); } }
+
+  .bloomsway { transform-box: fill-box; transform-origin: 0% 100%; animation: sway 10s -1000.00s ease-in-out infinite; }
+
+  /* petals: fall in arcs, each with a smear trail on the fast part of the arc */
+  .pf { animation: fall 16s -1000.00s linear infinite; opacity: 0; }
+  .pf .spin { transform-box: fill-box; transform-origin: center; animation: spin 4s -1000.00s linear infinite; }
+  .pf .smear { opacity: 0; animation: smear 16s -1000.00s linear infinite; }
+  .d1 { animation-delay:-1000.00s; } .d1 .smear { animation-delay:-1000.00s; }
+  .d2 { animation-delay:-1003.00s; } .d2 .smear { animation-delay:-1003.00s; }
+  .d3 { animation-delay:-1006.00s; } .d3 .smear { animation-delay:-1006.00s; }
+  .d4 { animation-delay:-1009.00s; } .d4 .smear { animation-delay:-1009.00s; }
+  .d5 { animation-delay:-1012.00s; } .d5 .smear { animation-delay:-1012.00s; }
+  .d6 { animation-delay:-1014.00s; } .d6 .smear { animation-delay:-1014.00s; }
+  @keyframes fall {
+    0% { transform: translate(0px, 0px); opacity: 0; }
+    6% { opacity: 0.95; }
+    25% { transform: translate(160px, 120px); }
+    45% { transform: translate(260px, 260px); }
+    65% { transform: translate(470px, 360px); }
+    85% { transform: translate(640px, 520px); opacity: 0.9; }
+    100% { transform: translate(760px, 640px); opacity: 0; }
+  }
+  @keyframes spin { from { transform: rotate(0deg) scaleX(1); } 50% { transform: rotate(180deg) scaleX(0.4); } to { transform: rotate(360deg) scaleX(1); } }
+  @keyframes smear { 0%, 47% { opacity: 0; } 54% { opacity: 0.45; } 62%, 100% { opacity: 0; } }
+
+  /* capybara one: breathing, blinking, ear flick, a head turn with anticipation */
+  .breathe { transform-box: fill-box; transform-origin: 50% 100%; animation: breathe 5s -1000.00s ease-in-out infinite; }
+  @keyframes breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, 1.03); } }
+  .head { transform-box: fill-box; transform-origin: 80% 80%; animation: look 16s -1000.00s infinite; }
+  @keyframes look {
+    0%, 52% { transform: rotate(0deg); animation-timing-function: ease-in; }
+    56% { transform: rotate(3deg); animation-timing-function: cubic-bezier(.2,1.6,.4,1); }
+    62%, 84% { transform: rotate(-7deg); animation-timing-function: ease-in-out; }
+    92%, 100% { transform: rotate(0deg); }
+  }
+  .blink { transform-box: fill-box; transform-origin: center; animation: blink 6s -1000.00s infinite; }
+  .blink.late { animation-delay:-1002.70s; animation-duration: 7.5s; }
+  @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
+  .ear { transform-box: fill-box; transform-origin: 50% 100%; animation: flick 11s -1000.00s infinite; }
+  @keyframes flick { 0%, 70%, 78%, 100% { transform: rotate(0deg); } 72% { transform: rotate(-22deg); } 74% { transform: rotate(10deg); } 76% { transform: rotate(-4deg); } }
+  .yuzubob { transform-box: fill-box; transform-origin: 50% 100%; animation: bob 5s -1000.00s ease-in-out infinite; animation-delay:-1000.30s; }
+  @keyframes bob { 0%, 100% { transform: translateY(0px) rotate(-2deg); } 50% { transform: translateY(-3px) rotate(2deg); } }
+
+  /* capybara two, soaking: slow float and steam drawn on twos */
+  .float { animation: float 7s -1000.00s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(4px); } }
+  .ripple { transform-box: fill-box; transform-origin: center; animation: ripple 7s -1000.00s ease-out infinite; }
+  @keyframes ripple { 0% { transform: scale(0.6); opacity: 0.7; } 100% { transform: scale(1.4); opacity: 0; } }
+  .puff { transform-box: fill-box; transform-origin: center bottom; animation: steam 6s -1000.00s cubic-bezier(.3,.5,.45,1) infinite; opacity: 0; }
+  .puff.s2 { animation-delay:-1002.00s; }
+  .puff.s3 { animation-delay:-1004.00s; }
+  @keyframes steam {
+    0% { transform: translate(0px, 0px) scale(0.55); opacity: 0; }
+    15% { opacity: 0.75; }
+    45% { transform: translate(-8px, -50px) scale(1.05); opacity: 0.6; }
+    75% { transform: translate(-16px, -92px) scale(1.35); opacity: 0.3; }
+    100% { transform: translate(-22px, -128px) scale(1.6); opacity: 0; }
+  }
+  .yfloat { transform-box: fill-box; transform-origin: center; animation: yfloat 9s -1000.00s ease-in-out infinite; }
+  @keyframes yfloat { 0%, 100% { transform: translate(0px, 0px) rotate(0deg); } 50% { transform: translate(14px, 2px) rotate(20deg); } }
+
+  /* dragonfly dart, sakuga style: hold, snap across, hold */
+  .dfly { animation: dart 18s -1000.00s infinite; }
+  @keyframes dart {
+    0%, 30% { transform: translate(0px, 0px); animation-timing-function: cubic-bezier(.7,0,.2,1); }
+    34%, 64% { transform: translate(-260px, -60px); animation-timing-function: cubic-bezier(.7,0,.2,1); }
+    68%, 100% { transform: translate(0px, 0px); }
+  }
+  .wing { transform-box: fill-box; transform-origin: 50% 100%; animation: wing 1.2s -1000.00s ease-in-out infinite; }
+  @keyframes wing { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.7); } }
+  .lines1 { animation: lines1 18s -1000.00s infinite; }
+  .lines2 { animation: lines2 18s -1000.00s infinite; }
+  @keyframes lines1 { 0%, 30% { opacity: 0; } 32% { opacity: 0.5; } 36%, 100% { opacity: 0; } }
+  @keyframes lines2 { 0%, 64% { opacity: 0; } 66% { opacity: 0.5; } 70%, 100% { opacity: 0; } }
+
+  @keyframes firefly { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.85; } }
+  .f2 { animation-delay:-1001.70s; } .f3 { animation-delay:-1003.10s; } .f4 { animation-delay:-1004.20s; }
+  .fdrift { animation: fdrift 12s -1000.00s ease-in-out infinite; }
+  @keyframes fdrift { 0%, 100% { transform: translate(0px, 0px); } 50% { transform: translate(12px, -18px); } }
+
+
+  /* samurai colors */
+  .haori { fill: #4f5d6e; }
+  .haori-d { fill: #414d5c; }
+  .hakama { fill: #3e3a38; }
+  .hakama-l { stroke: #2e2b29; fill: none; }
+  .skin { fill: #ecc9a6; }
+  .skin-d { fill: #d9b08a; }
+  .hair { fill: #2a2420; }
+  .inner { fill: #f3ece0; }
+  .hband { fill: #b4473a; }
+  .zabuton { fill: #c9785a; }
+  .zabuton-d { fill: #b0644a; }
+  .saya { stroke: #2a2420; fill: none; stroke-linecap: round; }
+  .tsuka { stroke: #5a4636; fill: none; stroke-linecap: round; }
+  .tsuba { fill: #c9a24a; }
+  .censer { fill: #7a6a5a; }
+  .stick { stroke: #8a5a3a; fill: none; }
+  .ember { fill: #e8743a; }
+  .smoke { stroke: #b8aea2; fill: none; stroke-linecap: round; opacity: 0; }
+  .aura { stroke: #f0c987; fill: none; opacity: 0; }
+
+  /* samurai motion: deep slow breath, headband tails on the breeze, incense smoke on twos, a slow ring of calm */
+  .zen { transform-box: fill-box; transform-origin: 50% 100%; animation: zen 7s -1000.00s ease-in-out infinite; }
+  @keyframes zen { 0%, 100% { transform: scale(1, 1); } 45% { transform: scale(1.01, 1.025); } }
+  .tails { transform-box: fill-box; transform-origin: 0% 50%; animation: tails 3.6s -1000.00s cubic-bezier(.45,0,.35,1) infinite; }
+  .tails.t2 { animation-delay:-1000.40s; }
+  @keyframes tails { 0%, 100% { transform: rotate(-6deg) scaleX(1); } 50% { transform: rotate(8deg) scaleX(0.92); } }
+  .wisp { animation: wisp 6s -1000.00s steps(12) infinite; }
+  .wisp.w2 { animation-delay:-1003.00s; }
+  @keyframes wisp {
+    0% { transform: translate(0px, 0px); opacity: 0; }
+    20% { opacity: 0.7; }
+    100% { transform: translate(10px, -70px); opacity: 0; }
+  }
+  .emberglow { animation: emberglow 4s -1000.00s ease-in-out infinite; }
+  @keyframes emberglow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+  .calm { transform-box: fill-box; transform-origin: center; animation: calm 9s -1000.00s ease-out infinite; }
+  @keyframes calm { 0% { transform: scale(0.7); opacity: 0; } 15% { opacity: 0.5; } 100% { transform: scale(1.35); opacity: 0; } }
+
+  /* the corners and the room sit in a middle band that stays in view on any width */
+  .roomb { transform: translate(0px, 104px) scale(1, 0.78); }
+  .left, .pfall { transform: translate(205px, 154px) scale(0.66); }
+  .right { transform: translate(352px, 104px) scale(0.78); }
+
+  /* narrow and tall boxes: pull the corners inward so they stay in view */
+  @media (max-aspect-ratio: 5/4) {
+    .roomb, .pfall { transform: none; }
+    .left { transform: translate(280px, 150px) scale(0.8); }
+    .right { transform: translate(20px, 150px) scale(0.8); }
+  }
+  @media (max-aspect-ratio: 1/1) {
+    .left { transform: translate(560px, -90px) scale(0.8); }
+    .right { transform: translate(-258px, 190px) scale(0.8); }
+    .shoji, .mat, .mat-l, .pfall { display: none; }
+  }
+
+  .lbl { font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif JP', serif; fill: #4a3726; letter-spacing: 1px; }
+  .lbl-k { font-size: 21px; fill: #8a4a32; }
+  .lbl-v { font-size: 17px; }
+  .lbl-s { font-size: 13px; fill: #6b5844; }
+  .burn { fill: #6b4f33; opacity: 0.85; }
+  .plaque { fill: #ecd9b6; stroke: #a88560; stroke-width: 2; }
+  .lbl-w { font-size: 17px; }
+  .scroll-mount { fill: #b9b08c; }
+  .scroll-paper { fill: #fbf5e7; }
+  .scroll-rod { fill: #6b4a35; }
+  .scroll-rule { stroke: #c9b79a; stroke-width: 1; fill: none; }
+  .scroll-h { fill: #8a4a32; }
+  .scroll-now { fill: #2d2620; font-weight: 600; }
+  .scroll-done { fill: #9a8a76; }
+  .lit { fill: #f8d792; opacity: 0.55; animation: litpulse 9s -1000.00s ease-in-out infinite; }
+  @keyframes litpulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 0.7; } }
+  .fallen { fill: #f2c6cf; }
+  /* the bath heats with the GPU */
+  .bubble { fill: #eef7f5; stroke: #9cc5c1; stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; animation: bubble 3s -1000.00s ease-in infinite; }
+  @keyframes bubble { 0% { transform: translateY(0px) scale(0.6); opacity: 0; } 20% { opacity: 0.9; } 90% { opacity: 0.8; } 100% { transform: translateY(-26px) scale(1.15); opacity: 0; } }
+  .flush { fill: #e0604a; opacity: 0.3; }
+  .drop { fill: #a9d8e6; animation: drip 2.4s -1000.00s ease-in infinite; }
+  @keyframes drip { 0% { transform: translateY(0px); opacity: 0; } 15% { opacity: 1; } 100% { transform: translateY(16px); opacity: 0; } }
+  .eyewhite { fill: #ffffff; }
+  .shock { stroke: #6b4f33; stroke-width: 3; stroke-linecap: round; fill: none; animation: shock 1.6s -1000.00s ease-in-out infinite; }
+  @keyframes shock { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.9; } }
+  .shiver { animation: shiver 0.7s -1000.00s ease-in-out infinite; }
+  @keyframes shiver { 0%, 100% { transform: translateX(-1.5px); } 50% { transform: translateX(1.5px); } }
+  .hot { fill: #b4473a !important; }
+  /* outside the round window */
+  .bird { stroke: #5a4a3c; stroke-width: 2.2; fill: none; stroke-linecap: round; }
+  .birds { opacity: 0; animation: birds 26s -1000.00s linear infinite; }
+  @keyframes birds { 0% { transform: translate(0px, 0px); opacity: 0; } 3% { opacity: 0.9; } 40% { transform: translate(240px, -20px); opacity: 0.9; } 43%, 100% { transform: translate(252px, -21px); opacity: 0; } }
+  .flap { transform-box: fill-box; transform-origin: center; animation: flap 0.9s -1000.00s ease-in-out infinite alternate; }
+  @keyframes flap { from { transform: scaleY(1); } to { transform: scaleY(0.35); } }
+  /* heavier training */
+  .dust { fill: #c9ab80; opacity: 0; transform-box: fill-box; transform-origin: center bottom; animation: dust 4.2s -1000.00s ease-out infinite; }
+  @keyframes dust { 0%, 44% { opacity: 0; transform: scale(0.4); } 50% { opacity: 0.6; transform: scale(1); } 75%, 100% { opacity: 0; transform: scale(1.8); } }
+  .speedfx { stroke: #c49a62; stroke-width: 3; stroke-linecap: round; animation: speedfx 1.9s -1000.00s ease-in-out infinite alternate; }
+  @keyframes speedfx { from { opacity: 0.35; } to { opacity: 0.75; } }
+  /* sword practice */
+  .blade { fill: #e4e8ea; stroke: #9aa3a8; stroke-width: 1; }
+  .swing { transform-origin: 0px 0px; animation: cut 4.2s -1000.00s infinite; }
+  @keyframes cut {
+    0%, 30% { transform: rotate(-8deg); animation-timing-function: ease-out; }
+    40% { transform: rotate(-22deg); animation-timing-function: cubic-bezier(.8,0,.2,1); }
+    47% { transform: rotate(118deg); animation-timing-function: ease-out; }
+    52%, 70% { transform: rotate(112deg); animation-timing-function: ease-in-out; }
+    92%, 100% { transform: rotate(-8deg); }
+  }
+  .smear-arc { fill: #fffaf0; opacity: 0; animation: smeararc 4.2s -1000.00s infinite; }
+  @keyframes smeararc { 0%, 41% { opacity: 0; } 46% { opacity: 0.6; } 56%, 100% { opacity: 0; } }
+  .kata { animation: dip 4.2s -1000.00s infinite; }
+  @keyframes dip { 0%, 42% { transform: translateY(0px); } 48%, 66% { transform: translateY(4px); } 90%, 100% { transform: translateY(0px); } }
+  @keyframes nod { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-5deg); } }
+  .zz { fill: #7a6650; opacity: 0; animation: zz 4.8s -1000.00s ease-out infinite; }
+  @keyframes zz { 0% { transform: translate(0px, 0px); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translate(14px, -34px); opacity: 0; } }
+</style>
+
+<!-- room: drawn taller than the frame so it still fills when squeezed -->
+<rect class="wall" x="-400" y="-600" width="2400" height="2200"/>
+<g class="roomb">
+<rect class="wall" x="-400" y="-200" width="2400" height="760"/>
+<rect class="wall-low" x="-400" y="560" width="2400" height="210"/>
+<rect class="frame" x="-400" y="556" width="2400" height="5"/>
+<rect class="skirt" x="-400" y="762" width="2400" height="12"/>
+<rect class="floor" x="-400" y="774" width="2400" height="900"/>
+<path class="plank" d="M-400 820H2000M-400 880H2000M-400 950H2000M-400 1030H2000M-400 1120H2000M220 774V820M640 820V880M1040 774V820M420 880V950M1260 880V950M880 950V1030M120 950V1030M560 1030V1120M1400 1030V1120"/>
+</g>
+
+<!-- top: lantern -->
+<g class="lampswing">
+  <path class="cord" stroke-width="2" d="M1000 0V120"/>
+  <circle class="glowpulse" cx="1000" cy="175" r="162" fill="url(#lampglow)" opacity="0.74"/>
+  <ellipse class="lamp" cx="1000" cy="175" rx="46" ry="56"/><ellipse cx="1000" cy="175" rx="46" ry="56" fill="#8a7458" opacity="0.14"/>
+  <path class="lamp-r" stroke-width="1.5" d="M958 150Q1000 140 1042 150M954 175Q1000 168 1046 175M958 200Q1000 210 1042 200"/>
+  <rect class="frame" x="986" y="116" width="28" height="7" rx="2"/>
+  <rect class="frame" x="988" y="228" width="24" height="6" rx="2"/>
+</g>
+
+<!-- left corner: moon window, shelf, bonsai, sakura vase -->
+<g class="left">
+  <g clip-path="url(#moonwin)">
+    <rect x="100" y="130" width="340" height="340" fill="#f8e3ca"/><g transform="translate(80 205) scale(1.7)"><g class="birds"><g transform="translate(0 0) scale(1)"><path class="bird flap" style="animation-delay:-1000.00s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(18 9) scale(0.8)"><path class="bird flap" style="animation-delay:-1000.30s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(34 -4) scale(0.9)"><path class="bird flap" style="animation-delay:-1000.60s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g></g></g>
+    <circle class="star twinkle" cx="190" cy="210" r="2"/>
+    <circle class="star twinkle" cx="330" cy="190" r="1.6" style="animation-delay:-1002.00s"/>
+    <circle class="star twinkle" cx="250" cy="250" r="1.4" style="animation-delay:-1004.00s"/>
+    <circle class="star twinkle" cx="380" cy="270" r="1.8" style="animation-delay:-1005.50s"/>
+    <circle cx="340" cy="243" r="34" fill="#f5bc78"/>
+    <g class="drift"><path class="cloud" d="M120 260q14-22 38-12q16-18 40 0q22-4 24 14H120Z"/></g>
+    <g class="drift2"><path class="cloud" d="M60 320q10-16 30-8q14-14 32 0q18-2 20 10H60Z"/></g>
+    <path class="mtn2" d="M100 400L170 330L215 360L290 290L360 350L440 310V470H100Z"/><g fill="#a88f78"><rect x="287" y="262" width="6" height="30"/><path d="M276 292h28l-4-5h-20zM279 282h22l-3-4h-16zM282 273h16l-3-4h-10zM289.5 258h1v-6h-1z"/></g>
+    <path class="mtn" d="M100 430L190 380L260 410L330 370L440 420V470H100Z"/>
+  </g>
+  <circle class="frame-s" stroke-width="14" cx="270" cy="300" r="170"/>
+  <path class="frame-s" stroke-width="5" d="M100 300H440M270 130V470" opacity="0.35"/>
+
+  
+    <path class="cord" stroke-width="1.5" d="M270 70L170 112M270 70L370 112"/>
+    <circle class="frame" cx="270" cy="70" r="4"/>
+    <rect class="plaque" x="130" y="110" width="280" height="84" rx="6"/>
+    <text class="lbl lbl-k" x="270" y="138" text-anchor="middle">残花 · Claude</text>
+    <text class="lbl lbl-v" x="270" y="163" text-anchor="middle">5h 10%  ·  7d 18%</text>
+    <text class="lbl lbl-s" x="270" y="183" text-anchor="middle">resets 14:30  ·  ctx 35%</text>
+    <g class="kakejiku">
+      <path class="cord" stroke-width="1.5" d="M600 100L470 136M600 100L730 136"/>
+      <circle class="frame" cx="600" cy="100" r="4"/>
+      <rect class="scroll-mount" x="452" y="140" width="296" height="160"/>
+      <rect class="scroll-paper" x="460" y="152" width="280" height="136"/>
+      <rect class="scroll-rod" x="444" y="136" width="312" height="8" rx="4"/>
+      <rect class="scroll-rod" x="444" y="298" width="312" height="10" rx="5"/>
+      <text class="lbl lbl-k" x="600" y="186" text-anchor="middle">今 · Now</text>
+      <text class="lbl lbl-w" x="474" y="216">Resting · waiting for you</text>
+    </g>
+  <!-- tatami mat under the shelf -->
+  <path class="mat" d="M40 790H520L560 900H0Z"/>
+  <path class="mat-l" stroke-width="2" d="M50 815H530M36 845H545M20 875H552"/>
+
+  <!-- low oak shelf -->
+  <rect class="shelf" x="70" y="690" width="420" height="26" rx="4"/>
+  <rect class="shelf-d" x="70" y="712" width="420" height="6"/>
+  <rect class="shelf-d" x="95" y="716" width="18" height="70"/>
+  <rect class="shelf-d" x="447" y="716" width="18" height="70"/>
+
+  <!-- bonsai -->
+  <path class="pot" d="M120 652H330L318 690H132Z"/>
+  <rect class="pot-d" x="112" y="644" width="226" height="12" rx="3"/>
+  <ellipse class="moss" cx="225" cy="646" rx="104" ry="7"/>
+  <path class="trunk" d="M215 646C205 610 240 590 228 560C218 535 180 530 175 505C172 490 182 478 196 476L204 484C194 490 192 500 200 510C214 530 252 535 256 565C262 600 232 618 240 646Z"/>
+  <path class="trunk-s" stroke-width="9" d="M232 575C260 565 285 560 310 540"/>
+  <path class="trunk-s" stroke-width="7" d="M200 520C180 520 160 512 140 500"/>
+  <path class="trunk-s" stroke-width="6" d="M198 486C210 465 230 452 250 448"/>
+  <g class="pad p1"><path class="leaf3" d="M268 548q-8-26 22-30q16-18 40-4q30-2 32 22q-4 22-30 20H284q-16 0-16-8Z"/><path class="leaf1" d="M280 536q4-16 26-16q14-12 30 0q18 2 18 14q-30 6-74 2Z"/></g>
+  <g class="pad p2"><path class="leaf3" d="M98 506q-10-24 18-30q14-18 38-6q26 0 28 20q-4 22-30 22H112q-14 0-14-6Z"/><path class="leaf1" d="M108 492q4-14 24-14q14-10 28 0q16 2 16 14q-30 6-68 0Z"/></g>
+  <g class="pad p3"><path class="leaf3" d="M206 458q-10-28 24-34q18-20 46-6q30 0 32 24q-4 24-34 24H222q-16 0-16-8Z"/><path class="leaf2" d="M218 444q6-18 30-18q16-12 34 0q20 2 20 16q-36 8-84 2Z"/></g>
+  <g class="pad p4"><path class="leaf1" d="M160 480q-4-16 16-18q10-12 26-2q18 2 16 14q-4 12-20 12h-28q-10 0-10-6Z"/></g>
+
+  <!-- sakura branch in a vase -->
+  <ellipse class="fallen" cx="448" cy="686" rx="5" ry="2" transform="rotate(-30 448 686)"/><path class="vase" d="M392 690C380 670 382 640 398 628V600H418V628C434 640 436 670 424 690Z"/>
+  <g class="bloomsway">
+    <path class="branch" stroke-width="4" d="M408 602C410 560 420 520 450 480C470 455 500 440 520 420"/>
+    <path class="branch" stroke-width="3" d="M440 495C470 495 495 500 520 510"/>
+    <path class="branch" stroke-width="2.5" d="M425 540C405 525 395 505 392 480"/>
+    <g class="bloom"><circle cx="470" cy="456" r="9"/><circle cx="518" cy="510" r="8"/><circle cx="520" cy="420" r="9"/><circle cx="392" cy="480" r="8"/><circle cx="450" cy="480" r="7"/><circle cx="500" cy="436" r="8"/><circle cx="492" cy="500" r="7"/><circle cx="404" cy="508" r="7"/><circle cx="535" cy="430" r="6"/><circle cx="487" cy="446" r="6"/><circle cx="462" cy="497" r="6"/><circle cx="428" cy="515" r="6"/><circle cx="510" cy="428" r="5"/></g><g class="bloom-c"><circle cx="470" cy="456" r="3"/><circle cx="518" cy="510" r="3"/><circle cx="520" cy="420" r="3"/><circle cx="392" cy="480" r="3"/><circle cx="450" cy="480" r="3"/><circle cx="500" cy="436" r="3"/><circle cx="492" cy="500" r="3"/><circle cx="404" cy="508" r="3"/></g>
+  </g>
+
+
+  <!-- meditating samurai on a cushion in front of the shelf -->
+  <g class="samurai">
+    <ellipse class="aura calm" stroke-width="3" cx="262" cy="790" rx="120" ry="110"/>
+    <ellipse class="ink" cx="262" cy="888" rx="130" ry="9" opacity="0.1"/>
+    <rect class="zabuton-d" x="160" y="864" width="204" height="22" rx="10"/>
+    <rect class="zabuton" x="164" y="856" width="196" height="20" rx="10"/>
+    <g class="zen">
+      <path class="hakama" d="M168 870C166 836 206 818 262 818C318 818 358 836 356 870Z"/>
+      <path class="hakama-l" stroke-width="2" d="M214 846C232 838 248 836 262 838M310 846C292 838 276 836 262 838M262 838V866"/>
+      <path class="haori" d="M214 760C226 746 298 746 310 760L324 834C300 846 224 846 200 834Z"/>
+      <path class="haori-d" d="M214 762C194 772 184 802 188 834L224 840C220 812 222 786 230 770Z"/>
+      <path class="haori-d" d="M310 762C330 772 340 802 336 834L300 840C304 812 302 786 294 770Z"/>
+      <path class="inner" d="M244 750L262 790L280 750Z"/>
+      <path class="haori-d" d="M240 752L262 800L250 800L234 758Z"/>
+      <path class="haori-d" d="M284 752L262 800L274 800L290 758Z"/>
+      <ellipse class="skin-d" cx="262" cy="834" rx="24" ry="9"/>
+      <ellipse class="skin" cx="262" cy="831" rx="20" ry="7"/>
+      <rect class="skin-d" x="253" y="734" width="18" height="20" rx="4"/>
+      <ellipse class="skin" cx="262" cy="718" rx="21" ry="25"/>
+      <path class="hair" d="M241 716C237 688 287 688 283 716C279 702 245 702 241 716Z"/>
+      <rect class="hair" x="256" y="682" width="12" height="16" rx="5"/>
+      <rect class="hband" x="255" y="694" width="14" height="3"/>
+      <rect class="hband" x="241" y="704" width="42" height="5" rx="2"/>
+      <path class="tails hband" d="M282 705C294 704 304 712 316 708L314 714C302 718 292 712 282 711Z"/>
+      <path class="tails t2 hband" d="M282 708C292 712 298 722 310 724L306 729C296 726 288 718 281 713Z"/>
+      <path class="ink-s" stroke-width="2.2" d="M248 722q5 4 10 0M266 722q5 4 10 0"/>
+      <path class="ink-s" stroke-width="1.6" d="M257 735q5 2 10 0" opacity="0.5"/>
+    </g>
+    <g>
+      <path class="saya" stroke-width="7" d="M330 884L470 866"/>
+      <path class="tsuka" stroke-width="8" d="M470 866L520 860"/>
+      <ellipse class="tsuba" cx="470" cy="866" rx="4" ry="9" transform="rotate(-7 470 866)"/>
+    </g>
+    <g>
+      <path class="censer" d="M108 884H150L146 866H112Z"/>
+      <path class="stick" stroke-width="2" d="M129 866L132 826"/>
+      <circle class="ember" cx="132" cy="826" r="3.0" opacity="0.72"/><path class="smoke wisp" stroke-width="2.6" style="animation-duration:5.05s;animation-delay:-1000.00s" d="M132 822C126 812 140 804 132 794C126 786 136 780 133 772"/><path class="smoke wisp" stroke-width="2.4" style="animation-duration:5.05s;animation-delay:-1001.68s" d="M132 822C138 812 124 804 132 794C138 786 128 780 133 772"/><path class="smoke wisp" stroke-width="2.2" style="animation-duration:5.05s;animation-delay:-1003.37s" d="M132 822C126 812 140 804 132 794C126 786 136 780 133 772"/>
+    </g>
+  </g>
+
+  
+    <text class="lbl lbl-k" x="22" y="826">香</text>
+    <text class="lbl lbl-v" x="20" y="850">CPU 38%</text>
+  <!-- fireflies, seen at night -->
+  <g class="fdrift">
+    <circle class="fly" cx="150" cy="420" r="3.5"/>
+    <circle class="fly f2" cx="330" cy="470" r="3"/>
+    <circle class="fly f3" cx="90" cy="600" r="3"/>
+    <circle class="fly f4" cx="380" cy="560" r="2.6"/>
+  </g>
+</g>
+
+<!-- falling petals from the branch, drifting across the room -->
+<g class="pfall">
+  <g transform="translate(500 430)"><g class="pf d1"><path class="smear" stroke-width="5" d="M-30 -40Q-10 -10 0 0"/><path class="petal spin" d="M0 0c4-7 13-7 15 0c-2 7-11 7-15 0Z"/></g></g>
+  <g transform="translate(470 460)"><g class="pf d2"><path class="smear" stroke-width="4" d="M-28 -36Q-8 -8 0 0"/><path class="petal spin" d="M0 0c4-6 12-6 13 0c-1 6-9 6-13 0Z"/></g></g>
+  <g transform="translate(520 510)"><g class="pf d3"><path class="smear" stroke-width="5" d="M-30 -40Q-10 -10 0 0"/><path class="petal spin" d="M0 0c4-7 13-7 15 0c-2 7-11 7-15 0Z"/></g></g>
+  <g transform="translate(395 480)"><g class="pf d4"><path class="smear" stroke-width="4" d="M-28 -36Q-8 -8 0 0"/><path class="petal spin" d="M0 0c3-6 11-6 12 0c-1 6-9 6-12 0Z"/></g></g>
+  <g transform="translate(540 425)"><g class="pf d5"><path class="smear" stroke-width="5" d="M-30 -40Q-10 -10 0 0"/><path class="petal spin" d="M0 0c4-7 13-7 15 0c-2 7-11 7-15 0Z"/></g></g>
+  <g transform="translate(450 485)"><g class="pf d6"><path class="smear" stroke-width="4" d="M-28 -36Q-8 -8 0 0"/><path class="petal spin" d="M0 0c3-6 11-6 12 0c-1 6-9 6-12 0Z"/></g></g>
+</g>
+
+<!-- right corner: shoji, light beams, capybaras -->
+<g class="right">
+  <g class="shoji">
+  <rect class="frame" x="1140" y="70" width="420" height="490"/>
+  <rect class="paper" x="1152" y="82" width="194" height="466"/>
+  <rect class="paper" x="1354" y="82" width="194" height="466"/><rect class="lit" x="1154" y="474" width="61" height="72" style="animation-delay:-1000.00s"/><rect class="lit" x="1219" y="474" width="60" height="72" style="animation-delay:-1001.30s"/><rect class="lit" x="1283" y="474" width="61" height="72" style="animation-delay:-1002.60s"/><rect class="lit" x="1356" y="474" width="61" height="72" style="animation-delay:-1003.90s"/><rect class="lit" x="1421" y="474" width="60" height="72" style="animation-delay:-1005.20s"/><rect class="lit" x="1485" y="474" width="61" height="72" style="animation-delay:-1006.50s"/><rect class="lit" x="1154" y="396" width="61" height="74" style="animation-delay:-1007.80s"/><rect class="lit" x="1219" y="396" width="60" height="74" style="animation-delay:-1000.10s"/><rect class="lit" x="1283" y="396" width="61" height="74" style="animation-delay:-1001.40s"/><rect class="lit" x="1356" y="396" width="61" height="74" style="animation-delay:-1002.70s"/><rect class="lit" x="1421" y="396" width="60" height="74" style="animation-delay:-1004.00s"/><rect class="lit" x="1485" y="396" width="61" height="74" style="animation-delay:-1005.30s"/><rect class="lit" x="1154" y="318" width="61" height="74" style="animation-delay:-1006.60s"/><rect class="lit" x="1219" y="318" width="60" height="74" style="animation-delay:-1007.90s"/><rect class="lit" x="1283" y="318" width="61" height="74" style="animation-delay:-1000.20s"/><rect class="lit" x="1356" y="318" width="61" height="74" style="animation-delay:-1001.50s"/><rect class="lit" x="1421" y="318" width="60" height="74" style="animation-delay:-1002.80s"/><rect class="lit" x="1485" y="318" width="61" height="74" style="animation-delay:-1004.10s"/><rect class="lit" x="1154" y="240" width="61" height="74" style="animation-delay:-1005.40s"/><rect class="lit" x="1219" y="240" width="60" height="74" style="animation-delay:-1006.70s"/><rect class="lit" x="1283" y="240" width="61" height="74" style="animation-delay:-1008.00s"/>
+  <path class="frame-s" stroke-width="4" d="M1152 160H1346M1152 238H1346M1152 316H1346M1152 394H1346M1152 472H1346M1217 82V548M1281 82V548"/>
+  <path class="frame-s" stroke-width="4" d="M1354 160H1548M1354 238H1548M1354 316H1548M1354 394H1548M1354 472H1548M1419 82V548M1483 82V548"/>
+  <rect class="frame" x="1346" y="82" width="8" height="466"/>
+  <g class="beams">
+    <path d="M1160 560L1350 560L1240 1000L920 1000Z" fill="url(#beam)"/>
+    <path d="M1360 560L1545 560L1500 1000L1200 1000Z" fill="url(#beam)"/>
+  </g>
+
+  <!-- dragonfly near the shoji -->
+  <g transform="translate(1420 300)">
+    <path class="speed lines1" stroke-width="2" d="M-200 -40H-120M-230 -52H-150M-180 -28H-110"/>
+    <path class="speed lines2" stroke-width="2" d="M-60 20H20M-90 8H-10M-40 32H30"/>
+    <g class="dfly">
+      <rect class="df-body" x="-2" y="-3" width="40" height="5" rx="2.5"/>
+      <circle class="df-body" cx="-4" cy="-0.5" r="5"/>
+      <g class="wing"><ellipse class="df-wing" cx="6" cy="-10" rx="5" ry="12" transform="rotate(-20 6 -10)"/><ellipse class="df-wing" cx="12" cy="-10" rx="4" ry="11" transform="rotate(20 12 -10)"/></g>
+    </g>
+  </g>
+  </g>
+
+  <!-- hinoki tub with a soaking capybara -->
+  <g transform="translate(1310 640)">
+    <g class="puff" style="animation-duration:5.35s;animation-delay:-1000.00s"><circle class="steam" cx="30" cy="20" r="12"/><circle class="steam" cx="47" cy="10" r="7"/></g><g class="puff" style="animation-duration:5.35s;animation-delay:-1001.34s"><circle class="steam" cx="77" cy="20" r="17"/><circle class="steam" cx="94" cy="10" r="12"/></g><g class="puff" style="animation-duration:5.35s;animation-delay:-1002.67s"><circle class="steam" cx="124" cy="20" r="14"/><circle class="steam" cx="141" cy="10" r="9"/></g><g class="puff" style="animation-duration:5.35s;animation-delay:-1004.01s"><circle class="steam" cx="171" cy="20" r="19"/><circle class="steam" cx="188" cy="10" r="14"/></g>
+    <g class="float" clip-path="url(#tubclip)"><g transform="translate(70 0)">
+        <path class="capy-d" d="M0 70C-6 40 16 20 50 18C80 16 100 30 104 56L106 80H0Z"/>
+        <path class="capy" d="M8 50C4 26 28 6 60 8C86 10 98 28 96 50C94 70 72 80 44 78C24 76 10 66 8 50Z"/>
+        <path class="snout" d="M8 44C6 32 16 24 28 26C34 34 34 52 30 62C18 62 10 56 8 44Z"/>
+        <ellipse class="ink" cx="15" cy="38" rx="3" ry="2"/>
+        <ellipse class="capy-d" cx="82" cy="12" rx="7" ry="6"/>
+        <path class="ink-s" stroke-width="2.5" d="M44 34q6 4 12 0"/>
+        <ellipse class="blush" cx="48" cy="48" rx="7" ry="4"/><path class="towel" d="M40 8C46 -4 74 -6 84 6L80 12C70 4 52 4 44 12Z"/></g></g>
+    <path class="water" d="M0 78H260V92H0Z"/>
+    <ellipse class="water-l ripple" cx="120" cy="84" rx="40" ry="5"/>
+    <g transform="translate(200 76)"><g class="yfloat"><circle class="yuzu" cx="0" cy="0" r="10"/><circle class="yuzu-l" cx="-3" cy="-3" r="3"/></g></g>
+    <path class="tub" d="M-6 84H266L256 176H4Z"/>
+    <path class="tub-d" d="M40 84V176M90 84V176M140 84V176M190 84V176M240 84V176" stroke="#00000018" stroke-width="2"/>
+    <rect class="band" x="-2" y="104" width="264" height="7"/>
+    <rect class="band" x="2" y="150" width="256" height="7"/>
+    <rect class="tub-d" x="-10" y="78" width="280" height="10" rx="3"/>
+  </g>
+
+  
+    <text class="lbl lbl-k" x="1270" y="592">記憶</text>
+    <text class="lbl lbl-v" x="1318" y="590">RAM 18.3 / 31 GB</text>
+    <text class="lbl lbl-k burn" x="1352" y="774" style="fill:#6b4f33">湯</text>
+    <text class="lbl lbl-v burn" x="1380" y="772" style="fill:#5a4128">GPU 55% · <tspan>52°</tspan></text>
+    <text class="lbl lbl-s burn" x="1380" y="787" style="fill:#5a4128">6.1 / 24 GB</text>
+  <!-- capybara with a yuzu on its head, sitting on the floor -->
+  <g transform="translate(1060 640)">
+    <ellipse class="ink" cx="120" cy="172" rx="120" ry="10" opacity="0.12"/>
+    <g class="breathe">
+      <path class="capy" d="M40 150C18 120 30 66 100 58C170 52 225 80 232 128C236 160 214 172 186 172H76C56 172 46 164 40 150Z"/>
+      <path class="capy-l" d="M90 70C130 62 180 70 206 96C170 80 130 76 96 84Z" opacity="0.6"/>
+      <rect class="capy-d" x="70" y="150" width="26" height="24" rx="8"/>
+      <rect class="capy-d" x="176" y="150" width="26" height="24" rx="8"/>
+    </g>
+    <g class="head" style="animation: nod 7s -1000.00s ease-in-out infinite">
+      <path class="capy" d="M10 92C2 56 32 26 76 28C108 30 126 52 122 82C118 112 92 124 58 122C32 120 16 110 10 92Z"/>
+      <path class="snout" d="M4 84C0 64 14 50 32 52C42 62 44 92 38 108C20 108 8 100 4 84Z"/>
+      <ellipse class="ink" cx="12" cy="74" rx="3.5" ry="2.4"/>
+      <path class="ink-s" stroke-width="2" d="M14 96q8 4 16 0"/>
+      <path class="ink-s" stroke-width="2.5" d="M50 61q6 4 12 0"/>
+      
+      <ellipse class="blush" cx="60" cy="84" rx="9" ry="5"/>
+      <g class="ear"><ellipse class="capy-d" cx="98" cy="30" rx="9" ry="8"/></g>
+      <text class="lbl zz" x="108" y="22" style="font-size:14px;animation-delay:-1000.00s">z</text><text class="lbl zz" x="114" y="18" style="font-size:18px;animation-delay:-1001.60s">z</text><text class="lbl zz" x="120" y="14" style="font-size:22px;animation-delay:-1003.20s">z</text><g class="yuzubob">
+        <circle class="yuzu" cx="68" cy="14" r="15"/>
+        <circle class="yuzu-l" cx="63" cy="9" r="4"/>
+        <path class="leaf-y" d="M70 0C74 -10 88 -12 92 -6C86 0 78 2 70 0Z"/>
+      </g>
+    </g>
+  </g>
+</g>
+
+<style>
+  .ribbon { display: none; }
+  .ribbon-paper { fill: #fbf5e7; stroke: #c9b79a; stroke-width: 0.8; }
+  .ribbon-text { font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif JP', serif; font-size: 10.5px; fill: #3d3026; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.5px; }
+  @media (max-aspect-ratio: 40/40) { .ribbon { display: inline; transform: translate(1248px, 34px); } }
+  @media (max-aspect-ratio: 39/40) { .ribbon { display: inline; transform: translate(1235px, 34px); } }
+  @media (max-aspect-ratio: 38/40) { .ribbon { display: inline; transform: translate(1223px, 34px); } }
+  @media (max-aspect-ratio: 37/40) { .ribbon { display: inline; transform: translate(1210px, 34px); } }
+  @media (max-aspect-ratio: 36/40) { .ribbon { display: inline; transform: translate(1198px, 34px); } }
+  @media (max-aspect-ratio: 35/40) { .ribbon { display: inline; transform: translate(1185px, 34px); } }
+  @media (max-aspect-ratio: 34/40) { .ribbon { display: inline; transform: translate(1173px, 34px); } }
+  @media (max-aspect-ratio: 33/40) { .ribbon { display: inline; transform: translate(1160px, 34px); } }
+  @media (max-aspect-ratio: 32/40) { .ribbon { display: inline; transform: translate(1148px, 34px); } }
+  @media (max-aspect-ratio: 31/40) { .ribbon { display: inline; transform: translate(1135px, 34px); } }
+  @media (max-aspect-ratio: 30/40) { .ribbon { display: inline; transform: translate(1123px, 34px); } }
+  @media (max-aspect-ratio: 29/40) { .ribbon { display: inline; transform: translate(1110px, 34px); } }
+  @media (max-aspect-ratio: 28/40) { .ribbon { display: inline; transform: translate(1098px, 34px); } }
+  @media (max-aspect-ratio: 27/40) { .ribbon { display: inline; transform: translate(1085px, 34px); } }
+  @media (max-aspect-ratio: 26/40) { .ribbon { display: inline; transform: translate(1073px, 34px); } }
+  @media (max-aspect-ratio: 25/40) { .ribbon { display: inline; transform: translate(1060px, 34px); } }
+  @media (max-aspect-ratio: 24/40) { .ribbon { display: inline; transform: translate(1048px, 34px); } }
+  @media (max-aspect-ratio: 23/40) { .ribbon { display: inline; transform: translate(1035px, 34px); } }
+  @media (max-aspect-ratio: 22/40) { .ribbon { display: inline; transform: translate(1023px, 34px); } }
+  @media (max-aspect-ratio: 21/40) { .ribbon { display: inline; transform: translate(1010px, 34px); } }
+  @media (max-aspect-ratio: 20/40) { .ribbon { display: inline; transform: translate(998px, 34px); } }
+  @media (max-aspect-ratio: 19/40) { .ribbon { display: inline; transform: translate(985px, 34px); } }
+  @media (max-aspect-ratio: 18/40) { .ribbon { display: inline; transform: translate(973px, 34px); } }
+  @media (max-aspect-ratio: 17/40) { .ribbon { display: inline; transform: translate(960px, 34px); } }
+  @media (max-aspect-ratio: 16/40) { .ribbon { display: inline; transform: translate(948px, 34px); } }
+  @media (max-aspect-ratio: 15/40) { .ribbon { display: inline; transform: translate(935px, 34px); } }
+  @media (max-aspect-ratio: 14/40) { .ribbon { display: inline; transform: translate(923px, 34px); } }
+</style>
+<g class="ribbon">
+  <rect class="scroll-rod" x="-3" y="0" width="40" height="5" rx="2.5"/>
+  <rect class="ribbon-paper" x="0" y="4" width="34" height="639"/>
+  <rect class="hband" x="16" y="643" width="2" height="14"/>
+  <text class="ribbon-text" x="24" y="20">記憶 RAM 59%　・　香 CPU 38%　・　湯 GPU 55% 52°</text>
+  <text class="ribbon-text" x="10" y="20">残花 5h 10% 7d 18%　・　灯 ctx 35%　・　今 Resting · waiting for y…</text>
+</g>
+</svg>

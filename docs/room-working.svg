@@ -290,6 +290,8 @@
   .kata { animation: dip 4.2s -1000.00s infinite; }
   @keyframes dip { 0%, 42% { transform: translateY(0px); } 48%, 66% { transform: translateY(4px); } 90%, 100% { transform: translateY(0px); } }
   .dfly, .lines1, .lines2 { animation-duration: 6s !important; }
+  .swing, .smear-arc, .kata, .dust { animation-duration: 2.8s !important; }
+  .smear-arc { fill: #ffffff; }
 </style>
 
 <!-- room: drawn taller than the frame so it still fills when squeezed -->
@@ -306,8 +308,8 @@
 <!-- top: lantern -->
 <g class="lampswing">
   <path class="cord" stroke-width="2" d="M1000 0V120"/>
-  <circle class="glowpulse" cx="1000" cy="175" r="162" fill="url(#lampglow)" opacity="0.74"/>
-  <ellipse class="lamp" cx="1000" cy="175" rx="46" ry="56"/><ellipse cx="1000" cy="175" rx="46" ry="56" fill="#8a7458" opacity="0.14"/>
+  <circle class="glowpulse" cx="1000" cy="175" r="154" fill="url(#lampglow)" opacity="0.66"/>
+  <ellipse class="lamp" cx="1000" cy="175" rx="46" ry="56"/><ellipse cx="1000" cy="175" rx="46" ry="56" fill="#8a7458" opacity="0.18"/>
   <path class="lamp-r" stroke-width="1.5" d="M958 150Q1000 140 1042 150M954 175Q1000 168 1046 175M958 200Q1000 210 1042 200"/>
   <rect class="frame" x="986" y="116" width="28" height="7" rx="2"/>
   <rect class="frame" x="988" y="228" width="24" height="6" rx="2"/>
@@ -316,12 +318,12 @@
 <!-- left corner: moon window, shelf, bonsai, sakura vase -->
 <g class="left">
   <g clip-path="url(#moonwin)">
-    <rect x="100" y="130" width="340" height="340" fill="#f7d9bb"/><g transform="translate(80 205) scale(1.7)"><g class="birds"><g transform="translate(0 0) scale(1)"><path class="bird flap" style="animation-delay:-1000.00s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(18 9) scale(0.8)"><path class="bird flap" style="animation-delay:-1000.30s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(34 -4) scale(0.9)"><path class="bird flap" style="animation-delay:-1000.60s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g></g></g>
+    <rect x="100" y="130" width="340" height="340" fill="#f6d4b3"/><g transform="translate(80 205) scale(1.7)"><g class="birds"><g transform="translate(0 0) scale(1)"><path class="bird flap" style="animation-delay:-1000.00s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(18 9) scale(0.8)"><path class="bird flap" style="animation-delay:-1000.30s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g><g transform="translate(34 -4) scale(0.9)"><path class="bird flap" style="animation-delay:-1000.60s" d="M0 0q5 -6 10 0q5 -6 10 0"/></g></g></g>
     <circle class="star twinkle" cx="190" cy="210" r="2"/>
     <circle class="star twinkle" cx="330" cy="190" r="1.6" style="animation-delay:-1002.00s"/>
     <circle class="star twinkle" cx="250" cy="250" r="1.4" style="animation-delay:-1004.00s"/>
     <circle class="star twinkle" cx="380" cy="270" r="1.8" style="animation-delay:-1005.50s"/>
-    <circle cx="340" cy="285" r="34" fill="#f2a86c"/>
+    <circle cx="340" cy="305" r="34" fill="#f09e66"/>
     <g class="drift"><path class="cloud" d="M120 260q14-22 38-12q16-18 40 0q22-4 24 14H120Z"/></g>
     <g class="drift2"><path class="cloud" d="M60 320q10-16 30-8q14-14 32 0q18-2 20 10H60Z"/></g>
     <path class="mtn2" d="M100 400L170 330L215 360L290 290L360 350L440 310V470H100Z"/><g fill="#a88f78"><rect x="287" y="262" width="6" height="30"/><path d="M276 292h28l-4-5h-20zM279 282h22l-3-4h-16zM282 273h16l-3-4h-10zM289.5 258h1v-6h-1z"/></g>
@@ -335,8 +337,8 @@
     <circle class="frame" cx="270" cy="70" r="4"/>
     <rect class="plaque" x="130" y="110" width="280" height="84" rx="6"/>
     <text class="lbl lbl-k" x="270" y="138" text-anchor="middle">残花 · Claude</text>
-    <text class="lbl lbl-v" x="270" y="163" text-anchor="middle">5h 42%  ·  7d 18%</text>
-    <text class="lbl lbl-s" x="270" y="183" text-anchor="middle">resets 14:30  ·  ctx 35%</text>
+    <text class="lbl lbl-v" x="270" y="163" text-anchor="middle">5h 58%  ·  7d 18%</text>
+    <text class="lbl lbl-s" x="270" y="183" text-anchor="middle">resets 14:30  ·  ctx 45%</text>
     <g class="kakejiku">
       <path class="cord" stroke-width="1.5" d="M600 100L470 136M600 100L730 136"/>
       <circle class="frame" cx="600" cy="100" r="4"/>
@@ -379,12 +381,12 @@
   <g class="pad p4"><path class="leaf1" d="M160 480q-4-16 16-18q10-12 26-2q18 2 16 14q-4 12-20 12h-28q-10 0-10-6Z"/></g>
 
   <!-- sakura branch in a vase -->
-  <ellipse class="fallen" cx="448" cy="686" rx="5" ry="2" transform="rotate(-30 448 686)"/><ellipse class="fallen" cx="462" cy="688" rx="5" ry="2" transform="rotate(7 462 688)"/><ellipse class="fallen" cx="372" cy="687" rx="5" ry="2" transform="rotate(-16 372 687)"/><ellipse class="fallen" cx="476" cy="686" rx="5" ry="2" transform="rotate(21 476 686)"/><ellipse class="fallen" cx="358" cy="688" rx="5" ry="2" transform="rotate(-2 358 688)"/><ellipse class="fallen" cx="441" cy="689" rx="5" ry="2" transform="rotate(-25 441 689)"/><path class="vase" d="M392 690C380 670 382 640 398 628V600H418V628C434 640 436 670 424 690Z"/>
+  <ellipse class="fallen" cx="448" cy="686" rx="5" ry="2" transform="rotate(-30 448 686)"/><ellipse class="fallen" cx="462" cy="688" rx="5" ry="2" transform="rotate(7 462 688)"/><ellipse class="fallen" cx="372" cy="687" rx="5" ry="2" transform="rotate(-16 372 687)"/><ellipse class="fallen" cx="476" cy="686" rx="5" ry="2" transform="rotate(21 476 686)"/><ellipse class="fallen" cx="358" cy="688" rx="5" ry="2" transform="rotate(-2 358 688)"/><ellipse class="fallen" cx="441" cy="689" rx="5" ry="2" transform="rotate(-25 441 689)"/><ellipse class="fallen" cx="470" cy="689" rx="5" ry="2" transform="rotate(12 470 689)"/><ellipse class="fallen" cx="350" cy="686" rx="5" ry="2" transform="rotate(-11 350 686)"/><path class="vase" d="M392 690C380 670 382 640 398 628V600H418V628C434 640 436 670 424 690Z"/>
   <g class="bloomsway">
     <path class="branch" stroke-width="4" d="M408 602C410 560 420 520 450 480C470 455 500 440 520 420"/>
     <path class="branch" stroke-width="3" d="M440 495C470 495 495 500 520 510"/>
     <path class="branch" stroke-width="2.5" d="M425 540C405 525 395 505 392 480"/>
-    <g class="bloom"><circle cx="470" cy="456" r="9"/><circle cx="518" cy="510" r="8"/><circle cx="520" cy="420" r="9"/><circle cx="392" cy="480" r="8"/><circle cx="450" cy="480" r="7"/><circle cx="500" cy="436" r="8"/><circle cx="492" cy="500" r="7"/><circle cx="404" cy="508" r="7"/></g><g class="bloom-c"><circle cx="470" cy="456" r="3"/><circle cx="518" cy="510" r="3"/><circle cx="520" cy="420" r="3"/><circle cx="392" cy="480" r="3"/><circle cx="450" cy="480" r="3"/><circle cx="500" cy="436" r="3"/><circle cx="492" cy="500" r="3"/><circle cx="404" cy="508" r="3"/></g>
+    <g class="bloom"><circle cx="470" cy="456" r="9"/><circle cx="518" cy="510" r="8"/><circle cx="520" cy="420" r="9"/><circle cx="392" cy="480" r="8"/><circle cx="450" cy="480" r="7"/><circle cx="500" cy="436" r="8"/></g><g class="bloom-c"><circle cx="470" cy="456" r="3"/><circle cx="518" cy="510" r="3"/><circle cx="520" cy="420" r="3"/><circle cx="392" cy="480" r="3"/><circle cx="450" cy="480" r="3"/><circle cx="500" cy="436" r="3"/></g>
   </g>
 
 
@@ -394,7 +396,7 @@
     <ellipse class="ink" cx="262" cy="888" rx="130" ry="9" opacity="0.1"/>
     <rect class="zabuton-d" x="160" y="864" width="204" height="22" rx="10"/>
     <rect class="zabuton" x="164" y="856" width="196" height="20" rx="10"/>
-    <g transform="translate(262 884) scale(1.35) translate(-262 -884)"><g class="kata">
+    <g transform="translate(262 884) scale(1.35) translate(-262 -884)"><ellipse class="dust" cx="208" cy="878" rx="24" ry="8"/><ellipse class="dust" cx="318" cy="878" rx="24" ry="8"/><g class="kata">
       <path class="hakama" d="M224 790L300 790L324 880H200Z"/>
       <path class="hakama-l" stroke-width="2" d="M262 806V880M236 808L226 876M288 808L298 876"/>
       <path class="haori" d="M228 730C236 718 288 718 296 730L306 798H218Z"/>
@@ -420,7 +422,7 @@
           <path class="blade" d="M12 -92L16 -93L42 -200L38 -204Z"/>
         </g>
       </g>
-    </g></g>
+    <path class="drop" style="animation-delay:-1000.00s" d="M282 668c4 6 6 10 6 13a6 6 0 0 1-12 0c0-3 2-7 6-13z"/><path class="drop" style="animation-delay:-1001.10s" d="M236 672c4 6 6 10 6 13a6 6 0 0 1-12 0c0-3 2-7 6-13z"/></g></g>
     <g>
       <path class="saya" stroke-width="7" d="M330 884L470 866"/>
       
@@ -429,13 +431,13 @@
     <g>
       <path class="censer" d="M108 884H150L146 866H112Z"/>
       <path class="stick" stroke-width="2" d="M129 866L132 826"/>
-      <circle class="ember" cx="132" cy="826" r="3.0" opacity="0.72"/><path class="smoke wisp" stroke-width="2.6" style="animation-duration:5.05s;animation-delay:-1000.00s" d="M132 822C126 812 140 804 132 794C126 786 136 780 133 772"/><path class="smoke wisp" stroke-width="2.4" style="animation-duration:5.05s;animation-delay:-1001.68s" d="M132 822C138 812 124 804 132 794C138 786 128 780 133 772"/><path class="smoke wisp" stroke-width="2.2" style="animation-duration:5.05s;animation-delay:-1003.37s" d="M132 822C126 812 140 804 132 794C126 786 136 780 133 772"/>
+      <circle class="ember" cx="132" cy="826" r="3.6" opacity="0.86"/><path class="smoke wisp" stroke-width="2.6" style="animation-duration:4.30s;animation-delay:-1000.00s" d="M132 822C126 812 140 804 132 794C126 786 136 780 133 772"/><path class="smoke wisp" stroke-width="2.4" style="animation-duration:4.30s;animation-delay:-1001.07s" d="M132 822C138 812 124 804 132 794C138 786 128 780 133 772"/><path class="smoke wisp" stroke-width="2.2" style="animation-duration:4.30s;animation-delay:-1002.15s" d="M132 822C126 812 140 804 132 794C126 786 136 780 133 772"/><path class="smoke wisp" stroke-width="2.0" style="animation-duration:4.30s;animation-delay:-1003.22s" d="M132 822C138 812 124 804 132 794C138 786 128 780 133 772"/>
     </g>
   </g>
 
   
     <text class="lbl lbl-k" x="22" y="826">香</text>
-    <text class="lbl lbl-v" x="20" y="850">CPU 38%</text>
+    <text class="lbl lbl-v" x="20" y="850">CPU 68%</text>
   <!-- fireflies, seen at night -->
   <g class="fdrift">
     <circle class="fly" cx="150" cy="420" r="3.5"/>
@@ -483,7 +485,7 @@
 
   <!-- hinoki tub with a soaking capybara -->
   <g transform="translate(1310 640)">
-    <g class="puff" style="animation-duration:5.35s;animation-delay:-1000.00s"><circle class="steam" cx="30" cy="20" r="12"/><circle class="steam" cx="47" cy="10" r="7"/></g><g class="puff" style="animation-duration:5.35s;animation-delay:-1001.34s"><circle class="steam" cx="77" cy="20" r="17"/><circle class="steam" cx="94" cy="10" r="12"/></g><g class="puff" style="animation-duration:5.35s;animation-delay:-1002.67s"><circle class="steam" cx="124" cy="20" r="14"/><circle class="steam" cx="141" cy="10" r="9"/></g><g class="puff" style="animation-duration:5.35s;animation-delay:-1004.01s"><circle class="steam" cx="171" cy="20" r="19"/><circle class="steam" cx="188" cy="10" r="14"/></g>
+    <g class="puff" style="animation-duration:4.84s;animation-delay:-1000.00s"><circle class="steam" cx="30" cy="20" r="12"/><circle class="steam" cx="47" cy="10" r="7"/></g><g class="puff" style="animation-duration:4.84s;animation-delay:-1000.97s"><circle class="steam" cx="77" cy="20" r="17"/><circle class="steam" cx="94" cy="10" r="12"/></g><g class="puff" style="animation-duration:4.84s;animation-delay:-1001.94s"><circle class="steam" cx="124" cy="20" r="14"/><circle class="steam" cx="141" cy="10" r="9"/></g><g class="puff" style="animation-duration:4.84s;animation-delay:-1002.90s"><circle class="steam" cx="171" cy="20" r="19"/><circle class="steam" cx="188" cy="10" r="14"/></g><g class="puff" style="animation-duration:4.84s;animation-delay:-1003.87s"><circle class="steam" cx="38" cy="20" r="16"/><circle class="steam" cx="55" cy="10" r="11"/></g>
     <g class="float" clip-path="url(#tubclip)"><g transform="translate(70 0)">
         <path class="capy-d" d="M0 70C-6 40 16 20 50 18C80 16 100 30 104 56L106 80H0Z"/>
         <path class="capy" d="M8 50C4 26 28 6 60 8C86 10 98 28 96 50C94 70 72 80 44 78C24 76 10 66 8 50Z"/>
@@ -491,9 +493,9 @@
         <ellipse class="ink" cx="15" cy="38" rx="3" ry="2"/>
         <ellipse class="capy-d" cx="82" cy="12" rx="7" ry="6"/>
         <path class="ink-s" stroke-width="2.5" d="M44 34q6 4 12 0"/>
-        <ellipse class="blush" cx="48" cy="48" rx="7" ry="4"/><path class="towel" d="M40 8C46 -4 74 -6 84 6L80 12C70 4 52 4 44 12Z"/></g></g>
+        <ellipse class="blush" cx="48" cy="48" rx="10" ry="5" style="opacity:0.75"/><path class="towel" d="M40 8C46 -4 74 -6 84 6L80 12C70 4 52 4 44 12Z"/></g></g>
     <path class="water" d="M0 78H260V92H0Z"/>
-    <ellipse class="water-l ripple" cx="120" cy="84" rx="40" ry="5"/>
+    <ellipse class="water-l ripple" cx="120" cy="84" rx="40" ry="5"/><circle class="bubble" cx="12" cy="86" r="2.5" style="animation-duration:3s;animation-delay:-1000.00s"/><circle class="bubble" cx="73" cy="86" r="2.5" style="animation-duration:3s;animation-delay:-1001.00s"/><circle class="bubble" cx="134" cy="86" r="2.5" style="animation-duration:3s;animation-delay:-1002.00s"/>
     <g transform="translate(200 76)"><g class="yfloat"><circle class="yuzu" cx="0" cy="0" r="10"/><circle class="yuzu-l" cx="-3" cy="-3" r="3"/></g></g>
     <path class="tub" d="M-6 84H266L256 176H4Z"/>
     <path class="tub-d" d="M40 84V176M90 84V176M140 84V176M190 84V176M240 84V176" stroke="#00000018" stroke-width="2"/>
@@ -506,8 +508,8 @@
     <text class="lbl lbl-k" x="1270" y="592">記憶</text>
     <text class="lbl lbl-v" x="1318" y="590">RAM 18.3 / 31 GB</text>
     <text class="lbl lbl-k burn" x="1352" y="774" style="fill:#6b4f33">湯</text>
-    <text class="lbl lbl-v burn" x="1380" y="772" style="fill:#5a4128">GPU 55% · <tspan>52°</tspan></text>
-    <text class="lbl lbl-s burn" x="1380" y="787" style="fill:#5a4128">6.1 / 24 GB</text>
+    <text class="lbl lbl-v burn" x="1380" y="772" style="fill:#5a4128">GPU 72% · <tspan>71°</tspan></text>
+    <text class="lbl lbl-s burn" x="1380" y="787" style="fill:#5a4128">9.6 / 24 GB</text>
   <!-- capybara with a yuzu on its head, sitting on the floor -->
   <g transform="translate(1060 640)">
     <ellipse class="ink" cx="120" cy="172" rx="120" ry="10" opacity="0.12"/>
@@ -571,7 +573,7 @@
   <rect class="scroll-rod" x="-3" y="0" width="40" height="5" rx="2.5"/>
   <rect class="ribbon-paper" x="0" y="4" width="34" height="649"/>
   <rect class="hband" x="16" y="653" width="2" height="14"/>
-  <text class="ribbon-text" x="24" y="20">記憶 RAM 59%　・　香 CPU 38%　・　湯 GPU 55% 52°</text>
-  <text class="ribbon-text" x="10" y="20">残花 5h 42% 7d 18%　・　灯 ctx 35%　・　今 Editing src/login.tsx 1/3</text>
+  <text class="ribbon-text" x="24" y="20">記憶 RAM 59%　・　香 CPU 68%　・　湯 GPU 72% 71°</text>
+  <text class="ribbon-text" x="10" y="20">残花 5h 58% 7d 18%　・　灯 ctx 45%　・　今 Editing src/login.tsx 1/3</text>
 </g>
 </svg>

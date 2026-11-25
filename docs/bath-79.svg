@@ -347,7 +347,7 @@
       <rect class="scroll-rod" x="444" y="136" width="312" height="8" rx="4"/>
       <rect class="scroll-rod" x="444" y="298" width="312" height="10" rx="5"/>
       <text class="lbl lbl-k" x="600" y="186" text-anchor="middle">今 · Now</text>
-      <text class="lbl lbl-w" x="474" y="216">Resting</text>
+      <text class="lbl lbl-w" x="474" y="216">Resting · waiting for you</text>
     </g>
   <!-- tatami mat under the shelf -->
   <path class="mat" d="M40 790H520L560 900H0Z"/>
@@ -561,9 +561,9 @@
 </style>
 <g class="ribbon">
   <rect class="scroll-rod" x="-3" y="0" width="40" height="5" rx="2.5"/>
-  <rect class="ribbon-paper" x="0" y="4" width="34" height="460"/>
-  <rect class="hband" x="16" y="464" width="2" height="14"/>
+  <rect class="ribbon-paper" x="0" y="4" width="34" height="639"/>
+  <rect class="hband" x="16" y="643" width="2" height="14"/>
   <text class="ribbon-text" x="24" y="20">記憶 RAM 59%　・　香 CPU 38%　・　湯 GPU 70% 79°</text>
-  <text class="ribbon-text" x="10" y="20">残花 5h 42% 7d 18%　・　灯 ctx 35%　・　今 Resting</text>
+  <text class="ribbon-text" x="10" y="20">残花 5h 42% 7d 18%　・　灯 ctx 35%　・　今 Resting · waiting for y…</text>
 </g>
 </svg>
