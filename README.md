@@ -1,5 +1,11 @@
 # Japandi Capybara
 
+[![Latest release](https://img.shields.io/github/v/release/Stukongeluk/japandi-capybara?color=8a4a32&label=release)](https://github.com/Stukongeluk/japandi-capybara/releases/latest)
+[![Claude Code theme](https://img.shields.io/badge/Claude%20Code-theme-c9785a)](#install)
+[![Stats on Windows, macOS and Linux](https://img.shields.io/badge/stats-Windows%20%7C%20macOS%20%7C%20Linux-5d7d45)](#notes)
+[![Last commit](https://img.shields.io/github/last-commit/Stukongeluk/japandi-capybara?color=9a7652)](https://github.com/Stukongeluk/japandi-capybara/commits/main)
+[![Stars](https://img.shields.io/github/stars/Stukongeluk/japandi-capybara?style=flat&color=b07a28)](https://github.com/Stukongeluk/japandi-capybara/stargazers)
+
 An animated, light Japandi theme for the Claude desktop app: a sunlit room with a round window, shoji screens, a swaying bonsai, drifting sakura petals, a meditating samurai and two very relaxed capybaras. The motion borrows from hand-drawn anime: held steam frames, petal smears, a head turn with anticipation and overshoot, a dragonfly that darts with speed lines.
 
 ![The room while Claude works: the samurai practises sword cuts, the scroll shows the current step and task list, the shoji glow with RAM use](docs/room-working.svg)
