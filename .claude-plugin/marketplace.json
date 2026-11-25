@@ -1,0 +1,5 @@
+{
+  "name": "japandi-capybara",
+  "owner": { "name": "Stukongeluk" },
+  "plugins": [{ "name": "japandi-capybara", "source": "./" }]
+}

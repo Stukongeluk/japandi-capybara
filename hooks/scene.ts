@@ -1,0 +1,465 @@
+// The Japandi room behind the conversation: a round moon window, shoji panels,
+// a cloud-pruned bonsai, a sakura branch shedding petals, a paper lantern and
+// two capybaras (one with a yuzu on its head, one soaking in a hinoki tub).
+// Motion borrows from sakuga craft: steam drawn on twos with steps(), petals
+// with smear trails, a head turn with anticipation and overshoot, foliage with
+// follow-through, and a dragonfly dart with speed lines.
+
+export const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+<defs>
+  <radialGradient id="lampglow" cx="50%" cy="50%" r="50%">
+    <stop offset="0%" class="glow-in"/>
+    <stop offset="100%" class="glow-out"/>
+  </radialGradient>
+  <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0%" class="beam-top"/>
+    <stop offset="100%" class="beam-bot"/>
+  </linearGradient>
+  <clipPath id="moonwin"><circle cx="270" cy="300" r="165"/></clipPath>
+  <clipPath id="tubclip"><rect x="0" y="-200" width="400" height="300"/></clipPath>
+  <filter id="steamsoft" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<style>
+  .wall { fill: #f5ede0; }
+  .wall-low { fill: #efe4d2; }
+  .floor { fill: #ddbd92; }
+  .plank { stroke: #cca77b; stroke-width: 2; fill: none; }
+  .skirt { fill: #bf9a6c; }
+  .frame { fill: #9a7652; }
+  .frame-s { stroke: #9a7652; fill: none; }
+  .paper { fill: #fdf6e8; }
+  .sky { fill: #f8e6cf; }
+  .mtn { fill: #d8c2ab; }
+  .mtn2 { fill: #c7ae96; }
+  .orb { fill: #f6c27c; }
+  .cloud { fill: #fdf3e6; }
+  .star { fill: #ffffff; opacity: 0; }
+  .shelf { fill: #c49a6a; }
+  .shelf-d { fill: #8f6c47; }
+  .pot { fill: #4a4f55; }
+  .pot-d { fill: #3a3e43; }
+  .trunk { fill: #6b4a35; }
+  .trunk-s { stroke: #6b4a35; fill: none; stroke-linecap: round; }
+  .leaf1 { fill: #6f8a5a; }
+  .leaf2 { fill: #86a06c; }
+  .leaf3 { fill: #5c7549; }
+  .moss { fill: #7d9460; }
+  .vase { fill: #d9cdb8; }
+  .branch { stroke: #5a4030; fill: none; stroke-linecap: round; }
+  .bloom { fill: #f2c6cf; }
+  .bloom-c { fill: #d98d9c; }
+  .petal { fill: #f2c6cf; }
+  .smear { stroke: #f2c6cf; fill: none; stroke-linecap: round; }
+  .capy { fill: #a5774c; }
+  .capy-d { fill: #8a5f3a; }
+  .capy-l { fill: #b98a5c; }
+  .snout { fill: #7a5233; }
+  .ink { fill: #2b2119; }
+  .ink-s { stroke: #2b2119; fill: none; stroke-linecap: round; }
+  .blush { fill: #d99a7a; opacity: 0.45; }
+  .yuzu { fill: #e8b13a; }
+  .yuzu-l { fill: #f3cc63; }
+  .leaf-y { fill: #5f7d45; }
+  .tub { fill: #d8b98a; }
+  .tub-d { fill: #c4a272; }
+  .band { fill: #8a6a4a; }
+  .water { fill: #b8d4d0; }
+  .water-l { fill: #d3e6e3; }
+  .steam { fill: #ffffff; opacity: 0.6; filter: url(#steamsoft); }
+  .towel { fill: #f3efe6; }
+  .lamp { fill: #fbe3b0; }
+  .lamp-r { stroke: #a58b6a; fill: none; }
+  .cord { stroke: #6b5440; fill: none; }
+  .glow-in { stop-color: #ffd98f; stop-opacity: 0.4; }
+  .glow-out { stop-color: #ffd98f; stop-opacity: 0; }
+  .beam-top { stop-color: #fff0c8; stop-opacity: 0.7; }
+  .beam-bot { stop-color: #fff0c8; stop-opacity: 0; }
+  .fly { fill: #fff3c4; opacity: 0; }
+  .df-body { fill: #4f6f78; }
+  .df-wing { fill: #dfeef0; opacity: 0.7; }
+  .speed { stroke: #8a6a4a; fill: none; stroke-linecap: round; opacity: 0; }
+  .mat { fill: #e3d4ad; }
+  .mat-l { stroke: #c4b38e; fill: none; }
+
+
+  /* gentle drifts */
+  .drift { animation: drift 60s linear infinite; }
+  .drift2 { animation: drift 90s linear infinite; animation-delay: -40s; }
+  @keyframes drift { from { transform: translateX(-160px); } to { transform: translateX(360px); } }
+
+  .beams { animation: beams 14s ease-in-out infinite; }
+  @keyframes beams { 0%, 100% { opacity: 0.65; } 50% { opacity: 1; } }
+
+  .lampswing { transform-box: view-box; transform-origin: 1000px 0px; animation: swing 9s ease-in-out infinite; }
+  @keyframes swing { 0%, 100% { transform: rotate(-1.2deg); } 50% { transform: rotate(1.2deg); } }
+
+  .glowpulse { animation: glow 6s ease-in-out infinite; }
+  @keyframes glow { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
+
+  .twinkle { animation: twinkle 7s ease-in-out infinite; }
+  @keyframes twinkle { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+
+  /* bonsai: pads sway with follow-through, each a beat behind the last */
+  .pad { transform-box: fill-box; transform-origin: 30% 90%; animation: sway 8s cubic-bezier(.45,0,.35,1) infinite; }
+  .pad.p2 { animation-delay: -0.5s; }
+  .pad.p3 { animation-delay: -1.0s; }
+  .pad.p4 { animation-delay: -1.5s; }
+  @keyframes sway { 0%, 100% { transform: rotate(-1.5deg); } 50% { transform: rotate(1.8deg); } }
+
+  .bloomsway { transform-box: fill-box; transform-origin: 0% 100%; animation: sway 10s ease-in-out infinite; }
+
+  /* petals: fall in arcs, each with a smear trail on the fast part of the arc */
+  .pf { animation: fall 16s linear infinite; opacity: 0; }
+  .pf .spin { transform-box: fill-box; transform-origin: center; animation: spin 4s linear infinite; }
+  .pf .smear { opacity: 0; animation: smear 16s linear infinite; }
+  .d1 { animation-delay: 0s; } .d1 .smear { animation-delay: 0s; }
+  .d2 { animation-delay: -3s; } .d2 .smear { animation-delay: -3s; }
+  .d3 { animation-delay: -6s; } .d3 .smear { animation-delay: -6s; }
+  .d4 { animation-delay: -9s; } .d4 .smear { animation-delay: -9s; }
+  .d5 { animation-delay: -12s; } .d5 .smear { animation-delay: -12s; }
+  .d6 { animation-delay: -14s; } .d6 .smear { animation-delay: -14s; }
+  @keyframes fall {
+    0% { transform: translate(0px, 0px); opacity: 0; }
+    6% { opacity: 0.95; }
+    25% { transform: translate(160px, 120px); }
+    45% { transform: translate(260px, 260px); }
+    65% { transform: translate(470px, 360px); }
+    85% { transform: translate(640px, 520px); opacity: 0.9; }
+    100% { transform: translate(760px, 640px); opacity: 0; }
+  }
+  @keyframes spin { from { transform: rotate(0deg) scaleX(1); } 50% { transform: rotate(180deg) scaleX(0.4); } to { transform: rotate(360deg) scaleX(1); } }
+  @keyframes smear { 0%, 47% { opacity: 0; } 54% { opacity: 0.45; } 62%, 100% { opacity: 0; } }
+
+  /* capybara one: breathing, blinking, ear flick, a head turn with anticipation */
+  .breathe { transform-box: fill-box; transform-origin: 50% 100%; animation: breathe 5s ease-in-out infinite; }
+  @keyframes breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, 1.03); } }
+  .head { transform-box: fill-box; transform-origin: 80% 80%; animation: look 16s infinite; }
+  @keyframes look {
+    0%, 52% { transform: rotate(0deg); animation-timing-function: ease-in; }
+    56% { transform: rotate(3deg); animation-timing-function: cubic-bezier(.2,1.6,.4,1); }
+    62%, 84% { transform: rotate(-7deg); animation-timing-function: ease-in-out; }
+    92%, 100% { transform: rotate(0deg); }
+  }
+  .blink { transform-box: fill-box; transform-origin: center; animation: blink 6s infinite; }
+  .blink.late { animation-delay: -2.7s; animation-duration: 7.5s; }
+  @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.1); } }
+  .ear { transform-box: fill-box; transform-origin: 50% 100%; animation: flick 11s infinite; }
+  @keyframes flick { 0%, 70%, 78%, 100% { transform: rotate(0deg); } 72% { transform: rotate(-22deg); } 74% { transform: rotate(10deg); } 76% { transform: rotate(-4deg); } }
+  .yuzubob { transform-box: fill-box; transform-origin: 50% 100%; animation: bob 5s ease-in-out infinite; animation-delay: -0.3s; }
+  @keyframes bob { 0%, 100% { transform: translateY(0px) rotate(-2deg); } 50% { transform: translateY(-3px) rotate(2deg); } }
+
+  /* capybara two, soaking: slow float and steam drawn on twos */
+  .float { animation: float 7s ease-in-out infinite; }
+  @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(4px); } }
+  .ripple { transform-box: fill-box; transform-origin: center; animation: ripple 7s ease-out infinite; }
+  @keyframes ripple { 0% { transform: scale(0.6); opacity: 0.7; } 100% { transform: scale(1.4); opacity: 0; } }
+  .puff { transform-box: fill-box; transform-origin: center bottom; animation: steam 6s cubic-bezier(.3,.5,.45,1) infinite; opacity: 0; }
+  .puff.s2 { animation-delay: -2s; }
+  .puff.s3 { animation-delay: -4s; }
+  @keyframes steam {
+    0% { transform: translate(0px, 0px) scale(0.55); opacity: 0; }
+    15% { opacity: 0.75; }
+    45% { transform: translate(-8px, -50px) scale(1.05); opacity: 0.6; }
+    75% { transform: translate(-16px, -92px) scale(1.35); opacity: 0.3; }
+    100% { transform: translate(-22px, -128px) scale(1.6); opacity: 0; }
+  }
+  .yfloat { transform-box: fill-box; transform-origin: center; animation: yfloat 9s ease-in-out infinite; }
+  @keyframes yfloat { 0%, 100% { transform: translate(0px, 0px) rotate(0deg); } 50% { transform: translate(14px, 2px) rotate(20deg); } }
+
+  /* dragonfly dart, sakuga style: hold, snap across, hold */
+  .dfly { animation: dart 18s infinite; }
+  @keyframes dart {
+    0%, 30% { transform: translate(0px, 0px); animation-timing-function: cubic-bezier(.7,0,.2,1); }
+    34%, 64% { transform: translate(-260px, -60px); animation-timing-function: cubic-bezier(.7,0,.2,1); }
+    68%, 100% { transform: translate(0px, 0px); }
+  }
+  .wing { transform-box: fill-box; transform-origin: 50% 100%; animation: wing 1.2s ease-in-out infinite; }
+  @keyframes wing { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.7); } }
+  .lines1 { animation: lines1 18s infinite; }
+  .lines2 { animation: lines2 18s infinite; }
+  @keyframes lines1 { 0%, 30% { opacity: 0; } 32% { opacity: 0.5; } 36%, 100% { opacity: 0; } }
+  @keyframes lines2 { 0%, 64% { opacity: 0; } 66% { opacity: 0.5; } 70%, 100% { opacity: 0; } }
+
+  @keyframes firefly { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.85; } }
+  .f2 { animation-delay: -1.7s; } .f3 { animation-delay: -3.1s; } .f4 { animation-delay: -4.2s; }
+  .fdrift { animation: fdrift 12s ease-in-out infinite; }
+  @keyframes fdrift { 0%, 100% { transform: translate(0px, 0px); } 50% { transform: translate(12px, -18px); } }
+
+
+  /* samurai colors */
+  .haori { fill: #4f5d6e; }
+  .haori-d { fill: #414d5c; }
+  .hakama { fill: #3e3a38; }
+  .hakama-l { stroke: #2e2b29; fill: none; }
+  .skin { fill: #ecc9a6; }
+  .skin-d { fill: #d9b08a; }
+  .hair { fill: #2a2420; }
+  .inner { fill: #f3ece0; }
+  .hband { fill: #b4473a; }
+  .zabuton { fill: #c9785a; }
+  .zabuton-d { fill: #b0644a; }
+  .saya { stroke: #2a2420; fill: none; stroke-linecap: round; }
+  .tsuka { stroke: #5a4636; fill: none; stroke-linecap: round; }
+  .tsuba { fill: #c9a24a; }
+  .censer { fill: #7a6a5a; }
+  .stick { stroke: #8a5a3a; fill: none; }
+  .ember { fill: #e8743a; }
+  .smoke { stroke: #b8aea2; fill: none; stroke-linecap: round; opacity: 0; }
+  .aura { stroke: #f0c987; fill: none; opacity: 0; }
+
+  /* samurai motion: deep slow breath, headband tails on the breeze, incense smoke on twos, a slow ring of calm */
+  .zen { transform-box: fill-box; transform-origin: 50% 100%; animation: zen 7s ease-in-out infinite; }
+  @keyframes zen { 0%, 100% { transform: scale(1, 1); } 45% { transform: scale(1.01, 1.025); } }
+  .tails { transform-box: fill-box; transform-origin: 0% 50%; animation: tails 3.6s cubic-bezier(.45,0,.35,1) infinite; }
+  .tails.t2 { animation-delay: -0.4s; }
+  @keyframes tails { 0%, 100% { transform: rotate(-6deg) scaleX(1); } 50% { transform: rotate(8deg) scaleX(0.92); } }
+  .wisp { animation: wisp 6s steps(12) infinite; }
+  .wisp.w2 { animation-delay: -3s; }
+  @keyframes wisp {
+    0% { transform: translate(0px, 0px); opacity: 0; }
+    20% { opacity: 0.7; }
+    100% { transform: translate(10px, -70px); opacity: 0; }
+  }
+  .emberglow { animation: emberglow 4s ease-in-out infinite; }
+  @keyframes emberglow { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+  .calm { transform-box: fill-box; transform-origin: center; animation: calm 9s ease-out infinite; }
+  @keyframes calm { 0% { transform: scale(0.7); opacity: 0; } 15% { opacity: 0.5; } 100% { transform: scale(1.35); opacity: 0; } }
+
+  /* the corners and the room sit in a middle band that stays in view on any width */
+  .roomb { transform: translate(0px, 104px) scale(1, 0.78); }
+  .left, .pfall { transform: translate(205px, 154px) scale(0.66); }
+  .right { transform: translate(352px, 104px) scale(0.78); }
+
+  /* narrow and tall boxes: pull the corners inward so they stay in view */
+  @media (max-aspect-ratio: 5/4) {
+    .roomb, .pfall { transform: none; }
+    .left { transform: translate(280px, 150px) scale(0.8); }
+    .right { transform: translate(20px, 150px) scale(0.8); }
+  }
+  @media (max-aspect-ratio: 1/1) {
+    .left { transform: translate(560px, -90px) scale(0.8); }
+    .right { transform: translate(-258px, 190px) scale(0.8); }
+    .shoji, .mat, .mat-l, .pfall { display: none; }
+  }
+</style>
+
+<!-- room: drawn taller than the frame so it still fills when squeezed -->
+<rect class="wall" x="-400" y="-600" width="2400" height="2200"/>
+<g class="roomb">
+<rect class="wall" x="-400" y="-200" width="2400" height="760"/>
+<rect class="wall-low" x="-400" y="560" width="2400" height="210"/>
+<rect class="frame" x="-400" y="556" width="2400" height="5"/>
+<rect class="skirt" x="-400" y="762" width="2400" height="12"/>
+<rect class="floor" x="-400" y="774" width="2400" height="900"/>
+<path class="plank" d="M-400 820H2000M-400 880H2000M-400 950H2000M-400 1030H2000M-400 1120H2000M220 774V820M640 820V880M1040 774V820M420 880V950M1260 880V950M880 950V1030M120 950V1030M560 1030V1120M1400 1030V1120"/>
+</g>
+
+<!-- top: lantern -->
+<g class="lampswing">
+  <path class="cord" stroke-width="2" d="M1000 0V120"/>
+  <circle class="glowpulse" cx="1000" cy="175" r="190" fill="url(#lampglow)"/>
+  <ellipse class="lamp" cx="1000" cy="175" rx="46" ry="56"/>
+  <path class="lamp-r" stroke-width="1.5" d="M958 150Q1000 140 1042 150M954 175Q1000 168 1046 175M958 200Q1000 210 1042 200"/>
+  <rect class="frame" x="986" y="116" width="28" height="7" rx="2"/>
+  <rect class="frame" x="988" y="228" width="24" height="6" rx="2"/>
+</g>
+
+<!-- left corner: moon window, shelf, bonsai, sakura vase -->
+<g class="left">
+  <g clip-path="url(#moonwin)">
+    <rect class="sky" x="100" y="130" width="340" height="340"/>
+    <circle class="star twinkle" cx="190" cy="210" r="2"/>
+    <circle class="star twinkle" cx="330" cy="190" r="1.6" style="animation-delay:-2s"/>
+    <circle class="star twinkle" cx="250" cy="250" r="1.4" style="animation-delay:-4s"/>
+    <circle class="star twinkle" cx="380" cy="270" r="1.8" style="animation-delay:-5.5s"/>
+    <circle class="orb" cx="340" cy="230" r="34"/>
+    <g class="drift"><path class="cloud" d="M120 260q14-22 38-12q16-18 40 0q22-4 24 14H120Z"/></g>
+    <g class="drift2"><path class="cloud" d="M60 320q10-16 30-8q14-14 32 0q18-2 20 10H60Z"/></g>
+    <path class="mtn2" d="M100 400L170 330L215 360L290 290L360 350L440 310V470H100Z"/>
+    <path class="mtn" d="M100 430L190 380L260 410L330 370L440 420V470H100Z"/>
+  </g>
+  <circle class="frame-s" stroke-width="14" cx="270" cy="300" r="170"/>
+  <path class="frame-s" stroke-width="5" d="M100 300H440M270 130V470" opacity="0.35"/>
+
+  <!-- tatami mat under the shelf -->
+  <path class="mat" d="M40 790H520L560 900H0Z"/>
+  <path class="mat-l" stroke-width="2" d="M50 815H530M36 845H545M20 875H552"/>
+
+  <!-- low oak shelf -->
+  <rect class="shelf" x="70" y="690" width="420" height="26" rx="4"/>
+  <rect class="shelf-d" x="70" y="712" width="420" height="6"/>
+  <rect class="shelf-d" x="95" y="716" width="18" height="70"/>
+  <rect class="shelf-d" x="447" y="716" width="18" height="70"/>
+
+  <!-- bonsai -->
+  <path class="pot" d="M120 652H330L318 690H132Z"/>
+  <rect class="pot-d" x="112" y="644" width="226" height="12" rx="3"/>
+  <ellipse class="moss" cx="225" cy="646" rx="104" ry="7"/>
+  <path class="trunk" d="M215 646C205 610 240 590 228 560C218 535 180 530 175 505C172 490 182 478 196 476L204 484C194 490 192 500 200 510C214 530 252 535 256 565C262 600 232 618 240 646Z"/>
+  <path class="trunk-s" stroke-width="9" d="M232 575C260 565 285 560 310 540"/>
+  <path class="trunk-s" stroke-width="7" d="M200 520C180 520 160 512 140 500"/>
+  <path class="trunk-s" stroke-width="6" d="M198 486C210 465 230 452 250 448"/>
+  <g class="pad p1"><path class="leaf3" d="M268 548q-8-26 22-30q16-18 40-4q30-2 32 22q-4 22-30 20H284q-16 0-16-8Z"/><path class="leaf1" d="M280 536q4-16 26-16q14-12 30 0q18 2 18 14q-30 6-74 2Z"/></g>
+  <g class="pad p2"><path class="leaf3" d="M98 506q-10-24 18-30q14-18 38-6q26 0 28 20q-4 22-30 22H112q-14 0-14-6Z"/><path class="leaf1" d="M108 492q4-14 24-14q14-10 28 0q16 2 16 14q-30 6-68 0Z"/></g>
+  <g class="pad p3"><path class="leaf3" d="M206 458q-10-28 24-34q18-20 46-6q30 0 32 24q-4 24-34 24H222q-16 0-16-8Z"/><path class="leaf2" d="M218 444q6-18 30-18q16-12 34 0q20 2 20 16q-36 8-84 2Z"/></g>
+  <g class="pad p4"><path class="leaf1" d="M160 480q-4-16 16-18q10-12 26-2q18 2 16 14q-4 12-20 12h-28q-10 0-10-6Z"/></g>
+
+  <!-- sakura branch in a vase -->
+  <path class="vase" d="M392 690C380 670 382 640 398 628V600H418V628C434 640 436 670 424 690Z"/>
+  <g class="bloomsway">
+    <path class="branch" stroke-width="4" d="M408 602C410 560 420 520 450 480C470 455 500 440 520 420"/>
+    <path class="branch" stroke-width="3" d="M440 495C470 495 495 500 520 510"/>
+    <path class="branch" stroke-width="2.5" d="M425 540C405 525 395 505 392 480"/>
+    <g class="bloom">
+      <circle cx="520" cy="420" r="9"/><circle cx="500" cy="436" r="8"/><circle cx="470" cy="456" r="9"/>
+      <circle cx="518" cy="510" r="8"/><circle cx="492" cy="500" r="7"/><circle cx="392" cy="480" r="8"/>
+      <circle cx="404" cy="508" r="7"/><circle cx="450" cy="480" r="7"/><circle cx="535" cy="430" r="6"/>
+    </g>
+    <g class="bloom-c">
+      <circle cx="520" cy="420" r="3"/><circle cx="470" cy="456" r="3"/><circle cx="518" cy="510" r="3"/><circle cx="392" cy="480" r="3"/>
+    </g>
+  </g>
+
+
+  <!-- meditating samurai on a cushion in front of the shelf -->
+  <g class="samurai">
+    <ellipse class="aura calm" stroke-width="3" cx="262" cy="790" rx="120" ry="110"/>
+    <ellipse class="ink" cx="262" cy="888" rx="130" ry="9" opacity="0.1"/>
+    <rect class="zabuton-d" x="160" y="864" width="204" height="22" rx="10"/>
+    <rect class="zabuton" x="164" y="856" width="196" height="20" rx="10"/>
+    <g class="zen">
+      <path class="hakama" d="M168 870C166 836 206 818 262 818C318 818 358 836 356 870Z"/>
+      <path class="hakama-l" stroke-width="2" d="M214 846C232 838 248 836 262 838M310 846C292 838 276 836 262 838M262 838V866"/>
+      <path class="haori" d="M214 760C226 746 298 746 310 760L324 834C300 846 224 846 200 834Z"/>
+      <path class="haori-d" d="M214 762C194 772 184 802 188 834L224 840C220 812 222 786 230 770Z"/>
+      <path class="haori-d" d="M310 762C330 772 340 802 336 834L300 840C304 812 302 786 294 770Z"/>
+      <path class="inner" d="M244 750L262 790L280 750Z"/>
+      <path class="haori-d" d="M240 752L262 800L250 800L234 758Z"/>
+      <path class="haori-d" d="M284 752L262 800L274 800L290 758Z"/>
+      <ellipse class="skin-d" cx="262" cy="834" rx="24" ry="9"/>
+      <ellipse class="skin" cx="262" cy="831" rx="20" ry="7"/>
+      <rect class="skin-d" x="253" y="734" width="18" height="20" rx="4"/>
+      <ellipse class="skin" cx="262" cy="718" rx="21" ry="25"/>
+      <path class="hair" d="M241 716C237 688 287 688 283 716C279 702 245 702 241 716Z"/>
+      <rect class="hair" x="256" y="682" width="12" height="16" rx="5"/>
+      <rect class="hband" x="255" y="694" width="14" height="3"/>
+      <rect class="hband" x="241" y="704" width="42" height="5" rx="2"/>
+      <path class="tails hband" d="M282 705C294 704 304 712 316 708L314 714C302 718 292 712 282 711Z"/>
+      <path class="tails t2 hband" d="M282 708C292 712 298 722 310 724L306 729C296 726 288 718 281 713Z"/>
+      <path class="ink-s" stroke-width="2.2" d="M248 722q5 4 10 0M266 722q5 4 10 0"/>
+      <path class="ink-s" stroke-width="1.6" d="M257 735q5 2 10 0" opacity="0.5"/>
+    </g>
+    <g>
+      <path class="saya" stroke-width="7" d="M330 884L470 866"/>
+      <path class="tsuka" stroke-width="8" d="M470 866L520 860"/>
+      <ellipse class="tsuba" cx="470" cy="866" rx="4" ry="9" transform="rotate(-7 470 866)"/>
+    </g>
+    <g>
+      <path class="censer" d="M108 884H150L146 866H112Z"/>
+      <path class="stick" stroke-width="2" d="M129 866L132 826"/>
+      <circle class="ember emberglow" cx="132" cy="826" r="2.4"/>
+      <path class="smoke wisp" stroke-width="2.4" d="M132 822C126 812 140 804 132 794C126 786 136 780 134 772"/>
+      <path class="smoke wisp w2" stroke-width="2" d="M132 822C138 812 126 806 134 796C140 788 130 782 133 774"/>
+    </g>
+  </g>
+
+  <!-- fireflies, seen at night -->
+  <g class="fdrift">
+    <circle class="fly" cx="150" cy="420" r="3.5"/>
+    <circle class="fly f2" cx="330" cy="470" r="3"/>
+    <circle class="fly f3" cx="90" cy="600" r="3"/>
+    <circle class="fly f4" cx="380" cy="560" r="2.6"/>
+  </g>
+</g>
+
+<!-- falling petals from the branch, drifting across the room -->
+<g class="pfall">
+  <g transform="translate(500 430)"><g class="pf d1"><path class="smear" stroke-width="5" d="M-30 -40Q-10 -10 0 0"/><path class="petal spin" d="M0 0c4-7 13-7 15 0c-2 7-11 7-15 0Z"/></g></g>
+  <g transform="translate(470 460)"><g class="pf d2"><path class="smear" stroke-width="4" d="M-28 -36Q-8 -8 0 0"/><path class="petal spin" d="M0 0c4-6 12-6 13 0c-1 6-9 6-13 0Z"/></g></g>
+  <g transform="translate(520 510)"><g class="pf d3"><path class="smear" stroke-width="5" d="M-30 -40Q-10 -10 0 0"/><path class="petal spin" d="M0 0c4-7 13-7 15 0c-2 7-11 7-15 0Z"/></g></g>
+  <g transform="translate(395 480)"><g class="pf d4"><path class="smear" stroke-width="4" d="M-28 -36Q-8 -8 0 0"/><path class="petal spin" d="M0 0c3-6 11-6 12 0c-1 6-9 6-12 0Z"/></g></g>
+  <g transform="translate(540 425)"><g class="pf d5"><path class="smear" stroke-width="5" d="M-30 -40Q-10 -10 0 0"/><path class="petal spin" d="M0 0c4-7 13-7 15 0c-2 7-11 7-15 0Z"/></g></g>
+  <g transform="translate(450 485)"><g class="pf d6"><path class="smear" stroke-width="4" d="M-28 -36Q-8 -8 0 0"/><path class="petal spin" d="M0 0c3-6 11-6 12 0c-1 6-9 6-12 0Z"/></g></g>
+</g>
+
+<!-- right corner: shoji, light beams, capybaras -->
+<g class="right">
+  <g class="shoji">
+  <rect class="frame" x="1140" y="70" width="420" height="490"/>
+  <rect class="paper" x="1152" y="82" width="194" height="466"/>
+  <rect class="paper" x="1354" y="82" width="194" height="466"/>
+  <path class="frame-s" stroke-width="4" d="M1152 160H1346M1152 238H1346M1152 316H1346M1152 394H1346M1152 472H1346M1217 82V548M1281 82V548"/>
+  <path class="frame-s" stroke-width="4" d="M1354 160H1548M1354 238H1548M1354 316H1548M1354 394H1548M1354 472H1548M1419 82V548M1483 82V548"/>
+  <rect class="frame" x="1346" y="82" width="8" height="466"/>
+  <g class="beams">
+    <path d="M1160 560L1350 560L1240 1000L920 1000Z" fill="url(#beam)"/>
+    <path d="M1360 560L1545 560L1500 1000L1200 1000Z" fill="url(#beam)"/>
+  </g>
+
+  <!-- dragonfly near the shoji -->
+  <g transform="translate(1420 300)">
+    <path class="speed lines1" stroke-width="2" d="M-200 -40H-120M-230 -52H-150M-180 -28H-110"/>
+    <path class="speed lines2" stroke-width="2" d="M-60 20H20M-90 8H-10M-40 32H30"/>
+    <g class="dfly">
+      <rect class="df-body" x="-2" y="-3" width="40" height="5" rx="2.5"/>
+      <circle class="df-body" cx="-4" cy="-0.5" r="5"/>
+      <g class="wing"><ellipse class="df-wing" cx="6" cy="-10" rx="5" ry="12" transform="rotate(-20 6 -10)"/><ellipse class="df-wing" cx="12" cy="-10" rx="4" ry="11" transform="rotate(20 12 -10)"/></g>
+    </g>
+  </g>
+  </g>
+
+  <!-- hinoki tub with a soaking capybara -->
+  <g transform="translate(1310 640)">
+    <g class="puff"><circle class="steam" cx="40" cy="20" r="16"/><circle class="steam" cx="58" cy="10" r="12"/></g>
+    <g class="puff s2"><circle class="steam" cx="110" cy="18" r="18"/><circle class="steam" cx="128" cy="8" r="11"/></g>
+    <g class="puff s3"><circle class="steam" cx="170" cy="22" r="14"/><circle class="steam" cx="184" cy="12" r="10"/></g>
+    <g class="float" clip-path="url(#tubclip)">
+      <g transform="translate(70 0)">
+        <path class="capy-d" d="M0 70C-6 40 16 20 50 18C80 16 100 30 104 56L106 80H0Z"/>
+        <path class="capy" d="M8 50C4 26 28 6 60 8C86 10 98 28 96 50C94 70 72 80 44 78C24 76 10 66 8 50Z"/>
+        <path class="snout" d="M8 44C6 32 16 24 28 26C34 34 34 52 30 62C18 62 10 56 8 44Z"/>
+        <ellipse class="ink" cx="15" cy="38" rx="3" ry="2"/>
+        <path class="ink-s" stroke-width="2.5" d="M44 34q6 4 12 0"/>
+        <path class="ink-s" stroke-width="2.5" d="M66 36q5 3 10 0" opacity="0.5"/>
+        <ellipse class="blush" cx="48" cy="48" rx="7" ry="4"/>
+        <ellipse class="capy-d" cx="82" cy="12" rx="7" ry="6"/>
+        <path class="towel" d="M40 8C46 -4 74 -6 84 6L80 12C70 4 52 4 44 12Z"/>
+      </g>
+    </g>
+    <path class="water" d="M0 78H260V92H0Z"/>
+    <ellipse class="water-l ripple" cx="120" cy="84" rx="40" ry="5"/>
+    <g transform="translate(200 76)"><g class="yfloat"><circle class="yuzu" cx="0" cy="0" r="10"/><circle class="yuzu-l" cx="-3" cy="-3" r="3"/></g></g>
+    <path class="tub" d="M-6 84H266L256 176H4Z"/>
+    <path class="tub-d" d="M40 84V176M90 84V176M140 84V176M190 84V176M240 84V176" stroke="#00000018" stroke-width="2"/>
+    <rect class="band" x="-2" y="104" width="264" height="7"/>
+    <rect class="band" x="2" y="150" width="256" height="7"/>
+    <rect class="tub-d" x="-10" y="78" width="280" height="10" rx="3"/>
+  </g>
+
+  <!-- capybara with a yuzu on its head, sitting on the floor -->
+  <g transform="translate(1060 640)">
+    <ellipse class="ink" cx="120" cy="172" rx="120" ry="10" opacity="0.12"/>
+    <g class="breathe">
+      <path class="capy" d="M40 150C18 120 30 66 100 58C170 52 225 80 232 128C236 160 214 172 186 172H76C56 172 46 164 40 150Z"/>
+      <path class="capy-l" d="M90 70C130 62 180 70 206 96C170 80 130 76 96 84Z" opacity="0.6"/>
+      <rect class="capy-d" x="70" y="150" width="26" height="24" rx="8"/>
+      <rect class="capy-d" x="176" y="150" width="26" height="24" rx="8"/>
+    </g>
+    <g class="head">
+      <path class="capy" d="M10 92C2 56 32 26 76 28C108 30 126 52 122 82C118 112 92 124 58 122C32 120 16 110 10 92Z"/>
+      <path class="snout" d="M4 84C0 64 14 50 32 52C42 62 44 92 38 108C20 108 8 100 4 84Z"/>
+      <ellipse class="ink" cx="12" cy="74" rx="3.5" ry="2.4"/>
+      <path class="ink-s" stroke-width="2" d="M14 96q8 4 16 0"/>
+      <g class="blink"><ellipse class="ink" cx="56" cy="62" rx="5" ry="5.5"/><circle cx="57.6" cy="60.2" r="1.5" fill="#ffffff"/></g>
+      <g class="blink"><ellipse class="ink" cx="84" cy="60" rx="3" ry="3.6"/></g>
+      <ellipse class="blush" cx="60" cy="84" rx="9" ry="5"/>
+      <g class="ear"><ellipse class="capy-d" cx="98" cy="30" rx="9" ry="8"/></g>
+      <g class="yuzubob">
+        <circle class="yuzu" cx="68" cy="14" r="15"/>
+        <circle class="yuzu-l" cx="63" cy="9" r="4"/>
+        <path class="leaf-y" d="M70 0C74 -10 88 -12 92 -6C86 0 78 2 70 0Z"/>
+      </g>
+    </g>
+  </g>
+</g>
+</svg>`
