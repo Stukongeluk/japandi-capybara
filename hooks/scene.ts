@@ -420,7 +420,6 @@ export const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 
         <path class="snout" d="M8 44C6 32 16 24 28 26C34 34 34 52 30 62C18 62 10 56 8 44Z"/>
         <ellipse class="ink" cx="15" cy="38" rx="3" ry="2"/>
         <path class="ink-s" stroke-width="2.5" d="M44 34q6 4 12 0"/>
-        <path class="ink-s" stroke-width="2.5" d="M66 36q5 3 10 0" opacity="0.5"/>
         <ellipse class="blush" cx="48" cy="48" rx="7" ry="4"/>
         <ellipse class="capy-d" cx="82" cy="12" rx="7" ry="6"/>
         <path class="towel" d="M40 8C46 -4 74 -6 84 6L80 12C70 4 52 4 44 12Z"/>
@@ -451,7 +450,7 @@ export const SCENE = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 
       <ellipse class="ink" cx="12" cy="74" rx="3.5" ry="2.4"/>
       <path class="ink-s" stroke-width="2" d="M14 96q8 4 16 0"/>
       <g class="blink"><ellipse class="ink" cx="56" cy="62" rx="5" ry="5.5"/><circle cx="57.6" cy="60.2" r="1.5" fill="#ffffff"/></g>
-      <g class="blink"><ellipse class="ink" cx="84" cy="60" rx="3" ry="3.6"/></g>
+      
       <ellipse class="blush" cx="60" cy="84" rx="9" ry="5"/>
       <g class="ear"><ellipse class="capy-d" cx="98" cy="30" rx="9" ry="8"/></g>
       <g class="yuzubob">

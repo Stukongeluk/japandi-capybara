@@ -276,7 +276,6 @@ function soaker(tier: 0 | 1 | 2 | 3): string {
     const blush = tier === 1 ? '<ellipse class="blush" cx="48" cy="48" rx="10" ry="5" style="opacity:0.75"/>' : '<ellipse class="blush" cx="48" cy="48" rx="7" ry="4"/>'
     return `<g class="float" clip-path="url(#tubclip)"><g transform="translate(70 0)">${base}
         <path class="ink-s" stroke-width="2.5" d="M44 34q6 4 12 0"/>
-        <path class="ink-s" stroke-width="2.5" d="M66 36q5 3 10 0" opacity="0.5"/>
         ${blush}${towel}</g></g>`
   }
 
@@ -284,7 +283,6 @@ function soaker(tier: 0 | 1 | 2 | 3): string {
     return `<g class="float" clip-path="url(#tubclip)"><g transform="translate(70 0)">${base}
         <path class="flush" d="${HEAD}"/>
         <path class="ink-s" stroke-width="2.5" d="M43 30l9 5l-9 5"/>
-        <path class="ink-s" stroke-width="2.5" d="M78 31l-8 4l8 4" opacity="0.6"/>
         <ellipse class="blush" cx="48" cy="50" rx="11" ry="5" style="opacity:0.85"/>
         <path class="towel" transform="rotate(32 84 8)" d="M40 8C46 -4 74 -6 84 6L80 12C70 4 52 4 44 12Z"/>
         ${DROP(98, 14, 0)}</g></g>`
@@ -294,7 +292,7 @@ function soaker(tier: 0 | 1 | 2 | 3): string {
   return `<g clip-path="url(#tubclip)"><g class="shiver"><g transform="translate(70 -38)">${base}
         <path class="flush" d="${HEAD}" style="opacity:0.4"/>
         <circle class="eyewhite" cx="50" cy="33" r="6.5"/><circle class="ink" cx="52" cy="34" r="2.8"/>
-        <circle class="eyewhite" cx="75" cy="34" r="5"/><circle class="ink" cx="77" cy="35" r="2.2"/>
+        
         <ellipse class="ink" cx="24" cy="54" rx="3" ry="4"/>
         <ellipse class="blush" cx="44" cy="52" rx="11" ry="5" style="opacity:0.9"/>
         <path class="shock" d="M2 8L-12 0M-2 26L-16 24M104 10L118 2M106 28L120 28"/>
@@ -425,9 +423,9 @@ export function buildScene(s: Stats, nowSec: number): string {
     svg = svg.replace('</style>', '  .dfly, .lines1, .lines2 { animation-duration: 6s !important; }\n</style>')
   } else {
     // Resting: the yuzu capybara dozes, nodding, with eyes shut and drifting z's.
-    const eyes = /<g class="blink"><ellipse[^>]*\/>(<circle[^>]*\/>)?<\/g>\s*<g class="blink"><ellipse[^>]*\/><\/g>/
+    const eyes = /<g class="blink"><ellipse[^>]*\/>(<circle[^>]*\/>)?<\/g>/
     must(svg, eyes)
-    svg = svg.replace(eyes, '<path class="ink-s" stroke-width="2.5" d="M50 61q6 4 12 0"/><path class="ink-s" stroke-width="2" d="M81 59q3 3 6 0"/>')
+    svg = svg.replace(eyes, '<path class="ink-s" stroke-width="2.5" d="M50 61q6 4 12 0"/>')
     svg = svg.replace('<g class="head">', '<g class="head" style="animation: nod 7s ease-in-out infinite">')
     const yuzuBob = '<g class="yuzubob">'
     must(svg, yuzuBob)
