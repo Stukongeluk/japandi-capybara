@@ -383,7 +383,7 @@
     <ellipse class="ink" cx="262" cy="888" rx="130" ry="9" opacity="0.1"/>
     <rect class="zabuton-d" x="160" y="864" width="204" height="22" rx="10"/>
     <rect class="zabuton" x="164" y="856" width="196" height="20" rx="10"/>
-    <g class="kata">
+    <g transform="translate(262 884) scale(1.35) translate(-262 -884)"><g class="kata">
       <path class="hakama" d="M224 790L300 790L324 880H200Z"/>
       <path class="hakama-l" stroke-width="2" d="M262 806V880M236 808L226 876M288 808L298 876"/>
       <path class="haori" d="M228 730C236 718 288 718 296 730L306 798H218Z"/>
@@ -409,7 +409,7 @@
           <path class="blade" d="M12 -92L16 -93L42 -200L38 -204Z"/>
         </g>
       </g>
-    </g>
+    </g></g>
     <g>
       <path class="saya" stroke-width="7" d="M330 884L470 866"/>
       
@@ -522,5 +522,45 @@
       </g>
     </g>
   </g>
+</g>
+
+<style>
+  .ribbon { display: none; }
+  .ribbon-paper { fill: #fbf5e7; stroke: #c9b79a; stroke-width: 0.8; }
+  .ribbon-text { font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif JP', serif; font-size: 10.5px; fill: #3d3026; writing-mode: vertical-rl; text-orientation: mixed; letter-spacing: 0.5px; }
+  @media (max-aspect-ratio: 40/40) { .ribbon { display: inline; transform: translate(1248px, 34px); } }
+  @media (max-aspect-ratio: 39/40) { .ribbon { display: inline; transform: translate(1235px, 34px); } }
+  @media (max-aspect-ratio: 38/40) { .ribbon { display: inline; transform: translate(1223px, 34px); } }
+  @media (max-aspect-ratio: 37/40) { .ribbon { display: inline; transform: translate(1210px, 34px); } }
+  @media (max-aspect-ratio: 36/40) { .ribbon { display: inline; transform: translate(1198px, 34px); } }
+  @media (max-aspect-ratio: 35/40) { .ribbon { display: inline; transform: translate(1185px, 34px); } }
+  @media (max-aspect-ratio: 34/40) { .ribbon { display: inline; transform: translate(1173px, 34px); } }
+  @media (max-aspect-ratio: 33/40) { .ribbon { display: inline; transform: translate(1160px, 34px); } }
+  @media (max-aspect-ratio: 32/40) { .ribbon { display: inline; transform: translate(1148px, 34px); } }
+  @media (max-aspect-ratio: 31/40) { .ribbon { display: inline; transform: translate(1135px, 34px); } }
+  @media (max-aspect-ratio: 30/40) { .ribbon { display: inline; transform: translate(1123px, 34px); } }
+  @media (max-aspect-ratio: 29/40) { .ribbon { display: inline; transform: translate(1110px, 34px); } }
+  @media (max-aspect-ratio: 28/40) { .ribbon { display: inline; transform: translate(1098px, 34px); } }
+  @media (max-aspect-ratio: 27/40) { .ribbon { display: inline; transform: translate(1085px, 34px); } }
+  @media (max-aspect-ratio: 26/40) { .ribbon { display: inline; transform: translate(1073px, 34px); } }
+  @media (max-aspect-ratio: 25/40) { .ribbon { display: inline; transform: translate(1060px, 34px); } }
+  @media (max-aspect-ratio: 24/40) { .ribbon { display: inline; transform: translate(1048px, 34px); } }
+  @media (max-aspect-ratio: 23/40) { .ribbon { display: inline; transform: translate(1035px, 34px); } }
+  @media (max-aspect-ratio: 22/40) { .ribbon { display: inline; transform: translate(1023px, 34px); } }
+  @media (max-aspect-ratio: 21/40) { .ribbon { display: inline; transform: translate(1010px, 34px); } }
+  @media (max-aspect-ratio: 20/40) { .ribbon { display: inline; transform: translate(998px, 34px); } }
+  @media (max-aspect-ratio: 19/40) { .ribbon { display: inline; transform: translate(985px, 34px); } }
+  @media (max-aspect-ratio: 18/40) { .ribbon { display: inline; transform: translate(973px, 34px); } }
+  @media (max-aspect-ratio: 17/40) { .ribbon { display: inline; transform: translate(960px, 34px); } }
+  @media (max-aspect-ratio: 16/40) { .ribbon { display: inline; transform: translate(948px, 34px); } }
+  @media (max-aspect-ratio: 15/40) { .ribbon { display: inline; transform: translate(935px, 34px); } }
+  @media (max-aspect-ratio: 14/40) { .ribbon { display: inline; transform: translate(923px, 34px); } }
+</style>
+<g class="ribbon">
+  <rect class="scroll-rod" x="-3" y="0" width="40" height="5" rx="2.5"/>
+  <rect class="ribbon-paper" x="0" y="4" width="34" height="649"/>
+  <rect class="hband" x="16" y="653" width="2" height="14"/>
+  <text class="ribbon-text" x="24" y="20">記憶 RAM 59%　・　香 CPU 38%　・　湯 GPU 55% 52°</text>
+  <text class="ribbon-text" x="10" y="20">残花 5h 42% 7d 18%　・　灯 ctx 35%　・　今 Editing src/login.tsx 1/3</text>
 </g>
 </svg>

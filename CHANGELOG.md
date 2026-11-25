@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1
+
+- The training samurai is drawn a third larger, so he stands taller than he sits, and his sword sweeps a wider arc.
+- The README's preview images are redrawn with the current room, one-eyed capybaras included.
+- The MIT license is part of this release.
+
 ## 0.2.0
 
 - **Stats on macOS and Linux.** The theme picks a stats script per system: PowerShell on Windows, `/proc` on Linux (GPU from `nvidia-smi`, or the driver's files on AMD cards), and `top`, `vm_stat` and `ioreg` on macOS (Apple Silicon GPU load; macOS reports no GPU temperature).

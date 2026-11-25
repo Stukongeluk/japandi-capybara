@@ -235,7 +235,8 @@ export function isWorking(w: Work | undefined): boolean {
 // The samurai standing on his cushion, practising a slow overhead cut: raise,
 // a small anticipation lift, a fast strike with a smear arc, a held follow
 // through, then a calm return. Arms and sword turn about the shoulders.
-const TRAINING = `<g class="kata">
+// Drawn a third larger than his seated self, standing on the same cushion.
+const TRAINING = `<g transform="translate(262 884) scale(1.35) translate(-262 -884)"><g class="kata">
       <path class="hakama" d="M224 790L300 790L324 880H200Z"/>
       <path class="hakama-l" stroke-width="2" d="M262 806V880M236 808L226 876M288 808L298 876"/>
       <path class="haori" d="M228 730C236 718 288 718 296 730L306 798H218Z"/>
@@ -261,7 +262,7 @@ const TRAINING = `<g class="kata">
           <path class="blade" d="M12 -92L16 -93L42 -200L38 -204Z"/>
         </g>
       </g>
-    </g>`
+    </g></g>`
 
 function soaker(tier: 0 | 1 | 2 | 3): string {
   const body = tier === 3 ? 'M0 70C-6 40 16 20 50 18C80 16 100 30 104 56L106 124H0Z' : 'M0 70C-6 40 16 20 50 18C80 16 100 30 104 56L106 80H0Z'
