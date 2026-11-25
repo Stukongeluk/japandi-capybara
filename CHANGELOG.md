@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0
+
+- **The theme in the terminal.** The terminal draws no themes, so there a band above the prompt shows a small pixel-art capybara in its tub beside three lines of the room's readings: what Claude is doing with its task progress; RAM, CPU, GPU, usage limit and context; and the limit's reset time with any background work.
+- The pixel capybara steams with GPU load, blushes, boils and climbs out as the GPU heats, and dozes while Claude rests. It animates without redrawing the band around it.
+
 ## 0.3.0
 
 - **Life outside the round window:** a small pagoda on the far ridge, and a flock of birds that flaps across the sky now and then.

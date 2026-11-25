@@ -52,6 +52,16 @@ The images are drawn by the theme's own code with sample figures, and they move,
 
 It also restyles messages (washi cards with a small red seal) and adds a quiet ambience you can switch on with the speaker button in the session's title bar: a breeze, a wind chime and the bath trickling.
 
+## In the terminal
+
+The terminal draws no themes, so there the theme shows a band above the prompt instead: a small pixel-art capybara soaking in its tub (steaming with GPU load, blushing, boiling and climbing out as the GPU heats, dozing while Claude rests) beside three lines of the room's readings:
+
+```
+今 ▸ Add the login page (2/4) · Editing src/login.tsx
+記憶 RAM 58%  香 CPU 12%  湯 GPU 30% 52°  残花 5h 42% 7d 18%  灯 ctx 35%
+limit resets 14:30 · 裏 agent: Review the changes
+```
+
 ## Install
 
 At the prompt of a terminal session:

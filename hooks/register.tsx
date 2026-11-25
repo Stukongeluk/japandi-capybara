@@ -2,6 +2,43 @@ import type { Register, ThemeSetArgs, ThemeSound, ThemeStyle } from 'claude-code
 
 import { makeColors } from './make-colors.js'
 import { buildScene, type PlanItem, type Stats, type Work } from './stats-scene.ts'
+import { ART_COLUMNS, ART_ROWS, artCells } from './terminal-art.ts'
+
+const ART_FRAME_MS = 500
+let bandRequestId: string | undefined
+let artFrame = 0
+
+const pct = (n: number) => `${Math.round(n)}%`
+const pad2 = (n: number) => String(n).padStart(2, '0')
+
+// The terminal band's three lines: what Claude is doing, the readings, and
+// the quiet extras (limit reset, background work).
+function bandLines(s: Stats): [string, string, string] {
+  const w = s.work
+  const current = w?.plan.find(p => p.status === 'in_progress')
+  const done = w?.plan.filter(p => p.status === 'completed').length ?? 0
+  const step = current ? `▸ ${current.content} (${done}/${w!.plan.length})` : ''
+  const nowText = w ? (step ? `${step} · ${w.now}` : w.now) : 'Resting'
+  const now = `今 ${nowText.length > 72 ? `${nowText.slice(0, 71)}…` : nowText}`
+
+  const parts: string[] = []
+  if (s.ramUsed !== undefined && s.ramTotal) parts.push(`記憶 RAM ${pct((s.ramUsed / s.ramTotal) * 100)}`)
+  if (s.cpu !== undefined) parts.push(`香 CPU ${pct(s.cpu)}`)
+  if (s.gpu) parts.push(`湯 GPU ${pct(s.gpu.util)}${s.gpu.temp === undefined ? '' : ` ${Math.round(s.gpu.temp)}°`}`)
+  const five = s.limits.find(l => l.kind === 'five_hour')
+  const week = s.limits.find(l => l.kind === 'seven_day')
+  if (five || week) parts.push(`残花 ${[five && `5h ${pct(five.percentUsed)}`, week && `7d ${pct(week.percentUsed)}`].filter(Boolean).join(' ')}`)
+  if (s.context !== undefined) parts.push(`灯 ctx ${pct(s.context)}`)
+  const readings = parts.join('  ') || 'reading the room…'
+
+  const extras: string[] = []
+  if (five?.resetsAt) {
+    const d = new Date(five.resetsAt)
+    if (!Number.isNaN(d.getTime())) extras.push(`limit resets ${pad2(d.getHours())}:${pad2(d.getMinutes())}`)
+  }
+  for (const b of w?.background.slice(-2) ?? []) extras.push(`裏 ${b.label}`)
+  return [now, readings, extras.join(' · ')]
+}
 
 // One long-lived process that prints a JSON line of machine stats every few
 // seconds. On Windows it is PowerShell. CIM classes are used so the names don't change with the Windows
@@ -324,6 +361,8 @@ export const register: Register = on => {
         dirty = false
         busy = true
         flip = !flip
+        // The terminal's band redraws the ordinary way.
+        if (bandRequestId !== undefined) $.ui.invalidate('ui.render')
         const backdrop = { ...(look.backdrop as { scene: string; glass?: object }), scene: flip ? 'japandi-room-b' : 'japandi-room' }
         void $.theme
           .set({ ...look, backdrop } as ThemeSetArgs)
@@ -332,6 +371,21 @@ export const register: Register = on => {
             busy = false
           })
       }
+    })
+
+    // The terminal's pixel bath: repaint its cells a few times a second, with
+    // no redraw of the band around it.
+    $.clock.every(ART_FRAME_MS, () => {
+      if (bandRequestId === undefined) return
+      artFrame++
+      void $.ui
+        .blit({ requestId: bandRequestId, key: 'bath', cells: artCells(stats, artFrame) })
+        .then(r => {
+          if ('deny' in r && r.deny) bandRequestId = undefined
+        })
+        .catch(() => {
+          bandRequestId = undefined
+        })
     })
 
     // The stats child lives for the session; it ends with the module.
@@ -425,6 +479,28 @@ export const register: Register = on => {
       dirty = true
     }
     return next(e)
+  })
+
+  // The terminal draws no theme, so it gets a band above the prompt instead:
+  // the pixel bath beside three lines of the room's readings.
+  on('ui.render', { component: 'AbovePrompt' }, ($, e, next) => {
+    if (e.surface !== 'terminal' || e.props.hasSurvey) {
+      return next(e)
+    }
+    bandRequestId = e.requestId
+    const { Box, Text, Raster } = $.ui.resolve(e)
+    const [now, readings, quiet] = bandLines(stats)
+
+    return (
+      <Box flexDirection="row">
+        <Raster key="bath" columns={ART_COLUMNS} rows={ART_ROWS} cells={artCells(stats, artFrame)} />
+        <Box flexDirection="column" marginLeft={2}>
+          <Text color="#c9785a">{now}</Text>
+          <Text color="#b9a58a">{readings}</Text>
+          <Text dimColor>{quiet}</Text>
+        </Box>
+      </Box>
+    )
   })
 
   on('ui.render', { component: 'Backdrop' }, ($, e, next) => {
