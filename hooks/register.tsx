@@ -1,7 +1,7 @@
-import type { Register, ThemeSetArgs, ThemeSound, ThemeStyle } from 'claude-code'
+import type { Register, ThemeCue, ThemeSetArgs, ThemeSound, ThemeStyle } from 'claude-code'
 
 import { makeColors } from './make-colors.js'
-import { buildScene, type PlanItem, type Stats, type Work } from './stats-scene.ts'
+import { buildScene, daypartAt, type PlanItem, type Stats, type Work } from './stats-scene.ts'
 import { ART_COLUMNS, ART_ROWS, artCells } from './terminal-art.ts'
 
 const ART_FRAME_MS = 500
@@ -16,6 +16,17 @@ let lastStatsRedraw = 0
 // The room as last sent, built with the clock held still, to skip redraws
 // that would change nothing.
 let lastScene = ''
+// A click's reaction stays this long, then the room goes back to itself.
+const REACTION_MS = 4_000
+let reactionUntil = 0
+// One-off sounds, swapped into the theme's own cues for a single moment:
+// a chime for Claude's "done" when a task list is finished, and a gong for the
+// next message sent after the 5-hour limit resets.
+let chimePending = false
+let gongPending = false
+let lastFiveUsed: number | undefined
+// Set once the session starts: sends the room now, outside the regular tick.
+let redrawNow: (() => void) | undefined
 
 const step = (n: number | undefined, by: number) => (n === undefined ? undefined : Math.round(n / by) * by)
 
@@ -222,6 +233,15 @@ function updatePlan(a: Record<string, unknown>): void {
     plan[a.start - 1]!.status = 'in_progress'
   }
   setWork({ plan })
+  celebrateIfFinished(plan)
+}
+
+// A finished task list of two or more steps earns a chime at Claude's "done".
+function celebrateIfFinished(plan: readonly PlanItem[]): void {
+  if (plan.length >= 2 && plan.every(p => p.status === 'completed') && !chimePending) {
+    chimePending = true
+    redrawNow?.()
+  }
 }
 
 function parseStats(line: string): Partial<Stats> | undefined {
@@ -337,8 +357,32 @@ const SOUND: ThemeSound = {
     ask: { layers: [{ wave: 'bell', notes: ['E5', 'B5'], step: 0.2, gain: 0.28, release: 1.2 }] },
     error: { layers: [{ wave: 'triangle', notes: ['D4', 'A3'], step: 0.18, gain: 0.25, release: 0.6, glide: -2 }] },
     compact: { layers: [{ wave: 'pink', gain: 0.2, filter: { type: 'lowpass', hz: 1200, to: 300 }, attack: 0.3, release: 1.2 }] },
-    click: { layers: [{ wave: 'bell', notes: ['D5', 'E5', 'G5', 'A5', 'B5', 'D6'], gain: 0.22, release: 1.4 }] },
+    // Left half of the room: a soft wooden note for the samurai's bow; right
+    // half: the capybara's rising squeak.
+    click: { layers: [{ wave: 'triangle', notes: ['A3', 'C4', 'D4', 'G5', 'A5', 'C6'], glide: 5, attack: 0.003, release: 0.16, gain: 0.35 }] },
   },
+}
+
+const CHIME: ThemeCue = {
+  reverb: 0.5,
+  layers: [{ wave: 'bell', notes: ['D5', 'F#5', 'A5', 'D6'], step: 0.12, gain: 0.32, release: 1.8 }],
+}
+const GONG: ThemeCue = {
+  reverb: 0.6,
+  layers: [
+    { wave: 'bell', notes: ['D3', 'A3'], gain: 0.45, attack: 0.004, release: 3.5 },
+    { wave: 'sine', notes: ['D2'], gain: 0.35, attack: 0.01, release: 4 },
+    { wave: 'brown', gain: 0.15, filter: { type: 'lowpass', hz: 300 }, release: 1.2 },
+  ],
+}
+
+// The theme's sound with any one-off cue swapped in.
+function soundNow(base: ThemeSound | undefined): ThemeSound | undefined {
+  if (!base || (!chimePending && !gongPending)) return base
+  return {
+    ...base,
+    cues: { ...base.cues, ...(chimePending ? { done: CHIME } : {}), ...(gongPending ? { send: GONG } : {}) },
+  }
 }
 
 const BASE: ThemeSetArgs = {
@@ -374,6 +418,7 @@ export const register: Register = on => {
     try {
       const usage = await $.session.usage()
       stats = { ...stats, limits: usage.rateLimits, context: usage.context.percent }
+      lastFiveUsed = usage.rateLimits.find(l => l.kind === 'five_hour')?.percentUsed
     } catch {
       // no usage figures on this host
     }
@@ -383,13 +428,50 @@ export const register: Register = on => {
     // is sent by setting the theme again under the other of two scene names,
     // which makes the app draw the backdrop afresh. Colors, style and sound are
     // unchanged, so only the room moves on.
+    stats = { ...stats, daypart: daypartAt(new Date()) }
     let flip = false
     let busy = false
     //
     // A redraw repaints the whole room, so it is only sent when the room would
     // look different: the scene is built with the clock held still and
     // compared with the last one sent.
+    const send = () => {
+      if (!backdropDrawn || busy) return false
+      const scene = buildScene(stats, 0)
+      const key = `${scene}|${chimePending}|${gongPending}`
+      if (key === lastScene) return true
+      lastScene = key
+      busy = true
+      flip = !flip
+      const backdrop = { ...(look.backdrop as { scene: string; glass?: object }), scene: flip ? 'japandi-room-b' : 'japandi-room' }
+      void $.theme
+        .set({ ...look, backdrop, ...(look.sound ? { sound: soundNow(look.sound) } : {}) } as ThemeSetArgs)
+        .catch(error => $.ui.log(`japandi-capybara: redraw failed: ${String(error)}`, { to: 'debug' }))
+        .finally(() => {
+          busy = false
+        })
+      return true
+    }
+    redrawNow = () => {
+      if (bandRequestId !== undefined) $.ui.invalidate('ui.render')
+      if (!send()) dirty = true
+    }
+
+    // A click's reaction ends on its own, a second's check at a time.
+    $.clock.every(1_000, () => {
+      if (stats.reaction && Date.now() > reactionUntil) {
+        stats = { ...stats, reaction: undefined }
+        redrawNow?.()
+      }
+    })
+
     $.clock.every(REDRAW_MS, () => {
+      // The light of the hour, by the person's own clock.
+      const part = daypartAt(new Date())
+      if (part !== stats.daypart) {
+        stats = { ...stats, daypart: part }
+        dirty = true
+      }
       // Machine readings move the room at most every STATS_REDRAW_MS; what
       // Claude is doing (the scroll, the samurai) within REDRAW_MS.
       const now = Date.now()
@@ -402,19 +484,7 @@ export const register: Register = on => {
         dirty = false
         // The terminal's band redraws the ordinary way.
         if (bandRequestId !== undefined) $.ui.invalidate('ui.render')
-        if (!backdropDrawn) return
-        const scene = buildScene(stats, 0)
-        if (scene === lastScene) return
-        lastScene = scene
-        busy = true
-        flip = !flip
-        const backdrop = { ...(look.backdrop as { scene: string; glass?: object }), scene: flip ? 'japandi-room-b' : 'japandi-room' }
-        void $.theme
-          .set({ ...look, backdrop } as ThemeSetArgs)
-          .catch(error => $.ui.log(`japandi-capybara: redraw failed: ${String(error)}`, { to: 'debug' }))
-          .finally(() => {
-            busy = false
-          })
+        send()
       }
     })
 
@@ -477,6 +547,11 @@ export const register: Register = on => {
   // The scroll: what Claude is doing, its task list, and background work.
   on('turn.start', ($, e, next) => {
     if (e.agentId === undefined) {
+      // The gong (on send) and the chime (on the last turn's end) have played.
+      if (gongPending || chimePending) {
+        gongPending = false
+        chimePending = false
+      }
       setWork({ now: 'Thinking…' })
     } else if (!runningAgents.has(e.agentId)) {
       runningAgents.set(e.agentId, { label: pendingAgents.shift() ?? 'subagent', since: Date.now() })
@@ -505,7 +580,11 @@ export const register: Register = on => {
       const a = e as unknown as Record<string, unknown>
       if (e.agentId === undefined) {
         if (e.tool === 'mcp__ccd_turn__update_plan') updatePlan(a)
-        else if (e.tool === 'mcp__ccd_turn__wrap_up') setWork({ plan: work.plan.map(p => ({ ...p, status: 'completed' as const })) })
+        else if (e.tool === 'mcp__ccd_turn__wrap_up') {
+          const plan = work.plan.map(p => ({ ...p, status: 'completed' as const }))
+          setWork({ plan })
+          celebrateIfFinished(plan)
+        }
         const line = describe(e.tool, a)
         if (line !== undefined) setWork({ now: line })
       }
@@ -523,6 +602,13 @@ export const register: Register = on => {
     if (e.changed.includes('rateLimits')) {
       stats = { ...stats, limits: e.rateLimits }
       dirty = true
+      // A fresh 5-hour window: the next message sent is greeted by a gong.
+      const five = e.rateLimits.find(l => l.kind === 'five_hour')?.percentUsed
+      if (five !== undefined && lastFiveUsed !== undefined && five < lastFiveUsed - 15) {
+        gongPending = true
+        redrawNow?.()
+      }
+      if (five !== undefined) lastFiveUsed = five
     }
     if (e.changed.includes('context')) {
       stats = { ...stats, context: e.context.percent }
@@ -531,8 +617,20 @@ export const register: Register = on => {
     return next(e)
   })
 
+  // A click on the bare room: the left half asks the samurai to bow, the right
+  // half makes the capybara squeak. The app plays the matching click sound.
+  // (Clicks on the backdrop need a current Claude Code; this event is unknown to
+  // builds older than the one this theme is written for.)
+  on('ui.pointer', ($, e, next) => {
+    stats = { ...stats, reaction: e.x < 0.5 ? 'bow' : 'squeak' }
+    reactionUntil = Date.now() + REACTION_MS
+    redrawNow?.()
+    return next(e)
+  })
+
   // The terminal draws no theme, so it gets a band above the prompt instead:
   // the pixel bath beside three lines of the room's readings.
+
   on('ui.render', { component: 'AbovePrompt' }, ($, e, next) => {
     if (e.surface !== 'terminal' || e.props.hasSurvey) {
       return next(e)
@@ -561,7 +659,7 @@ export const register: Register = on => {
       return next(e)
     }
     backdropDrawn = true
-    lastScene = buildScene(stats, 0)
+    lastScene = `${buildScene(stats, 0)}|${chimePending}|${gongPending}`
 
     const { Svg } = $.ui.resolve(e)
 

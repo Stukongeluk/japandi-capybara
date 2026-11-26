@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.0
+
+- **The room keeps your hours.** A soft pink dawn (06–08), a golden evening (18–21), and at night (21–06) a lantern-lit room: brightest around the lantern, darker toward the edges, with a moon and stars in the round window. The moon sinks and the sky deepens as you use your 5-hour limit. The light through the shoji onto the capybaras turns to moonlight at night, sunset orange in the evening and pink at dawn, and the shoji paper takes the same light while the RAM panes stay a warm glow against it.
+- **Click the room.** The left half: the samurai bows (seated, or standing with his sword lowered). The right half: the capybara squeaks "キュッ♪" and its yuzu hops.
+- **New sounds** (with the theme's speaker on): a squeak or a soft wooden note on a click, a chime when Claude finishes a whole task list, and a gong on the first message after your 5-hour limit resets.
+- Clicks need a current Claude Code; older builds don't know the event.
+
 ## 0.4.1
 
 Lighter on your computer:

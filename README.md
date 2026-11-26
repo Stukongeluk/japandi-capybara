@@ -29,6 +29,9 @@ The room also shows what is going on, without a single gauge:
 | Context window | The paper lantern dims as the conversation fills up |
 | What Claude is doing | A hanging scroll shows the current step, the task list and background work |
 | Working or resting | The samurai practises sword cuts while Claude works and meditates when it rests; the capybara dozes off |
+| Your own clock | A soft pink dawn, a golden evening, and at night a lantern-lit room with a moon and stars in the window (the moon sinks as you use your limit) |
+| A click on the room | The left half: the samurai bows. The right half: the capybara squeaks and its yuzu hops |
+| Sounds (with the speaker on) | A squeak or a soft wooden note on a click, a chime when Claude finishes a whole task list, and a gong on the first message after your 5-hour limit resets |
 
 The sky through the round window follows your 5-hour limit, with a pagoda on the ridge and birds passing now and then:
 

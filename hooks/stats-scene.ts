@@ -21,6 +21,21 @@ export type Stats = {
   work?: Work
   /** How full the conversation's context window is, 0 to 100. */
   context?: number
+  /** The part of the day on the person's own clock. */
+  daypart?: Daypart
+  /** A short reaction to a click on the room. */
+  reaction?: 'bow' | 'squeak'
+}
+
+export type Daypart = 'dawn' | 'day' | 'evening' | 'night'
+
+/** Dawn 06–08, day 08–18, evening 18–21, night 21–06, by the local clock. */
+export function daypartAt(date: Date): Daypart {
+  const h = date.getHours()
+  if (h >= 21 || h < 6) return 'night'
+  if (h < 8) return 'dawn'
+  if (h >= 18) return 'evening'
+  return 'day'
 }
 
 export type PlanItem = { content: string; status: 'pending' | 'in_progress' | 'completed' }
@@ -453,8 +468,12 @@ function lerpHex(stops: readonly [number, string][], t: number): string {
 // Morning sky with the whole limit left, sunset as it runs out.
 const SKY: readonly [number, string][] = [[0, '#f8e6cf'], [60, '#f6d3b2'], [100, '#efa98a']]
 const SUN: readonly [number, string][] = [[0, '#f6c27c'], [100, '#ec8456']]
+const NIGHT_SKY: readonly [number, string][] = [[0, '#22304a'], [100, '#46305a']]
+const NIGHT_STARS = [[150, 190], [205, 160], [262, 205], [395, 175], [180, 255], [420, 240], [300, 150]]
+  .map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i % 3 ? 1.4 : 2}" fill="#f6efdc" opacity="${i % 2 ? 0.6 : 0.9}"/>`)
+  .join('')
 
-const PAGODA = `<g fill="#a88f78"><rect x="287" y="262" width="6" height="30"/><path d="M276 292h28l-4-5h-20zM279 282h22l-3-4h-16zM282 273h16l-3-4h-10zM289.5 258h1v-6h-1z"/></g>`
+const pagoda = (fill: string) => `<g fill="${fill}"><rect x="287" y="262" width="6" height="30"/><path d="M276 292h28l-4-5h-20zM279 282h22l-3-4h-16zM282 273h16l-3-4h-10zM289.5 258h1v-6h-1z"/></g>`
 const BIRDS = `<g transform="translate(80 205) scale(1.7)"><g class="birds">${[
   [0, 0, 1],
   [18, 9, 0.8],
@@ -488,6 +507,55 @@ function training(cpu: number | undefined): { markup: string; css: string } {
   return { markup, css }
 }
 
+// The light of the hour over the whole room. At night the lantern is the
+// light: the shade is clear around it and deepens toward the edges.
+function daylight(part: Daypart | undefined): string {
+  const tint: Record<Daypart, [string, number, number]> = {
+    dawn: ['#e89a9a', 0.06, 0.14],
+    day: ['#000000', 0, 0],
+    evening: ['#b8612a', 0.12, 0.32],
+    night: ['#1c1830', 0.12, 0.58],
+  }
+  const [color, inner, outer] = tint[part ?? 'day']
+  if (outer === 0) return ''
+  return `
+<defs><radialGradient id="hourlight" gradientUnits="userSpaceOnUse" cx="1000" cy="175" r="1150">
+  <stop offset="0%" stop-color="${color}" stop-opacity="0"/>
+  <stop offset="12%" stop-color="${color}" stop-opacity="${inner}"/>
+  <stop offset="100%" stop-color="${color}" stop-opacity="${outer}"/>
+</radialGradient></defs>
+<rect x="-400" y="-600" width="2400" height="2200" fill="url(#hourlight)" pointer-events="none"/>`
+}
+
+// A click on the room: the capybara squeaks and its yuzu hops, or the
+// samurai bows. Drawn for a few seconds, then the room goes back to itself.
+function react(svg: string, kind: 'bow' | 'squeak', working: boolean): string {
+  const css = `
+  @keyframes hop { 0%, 100% { transform: translateY(0px) rotate(0deg); } 30% { transform: translateY(-14px) rotate(-14deg); } 55% { transform: translateY(0px) rotate(8deg); } 75% { transform: translateY(-5px) rotate(-4deg); } }
+  @keyframes bounce { 0%, 100% { transform: translateY(0px); } 30% { transform: translateY(-5px); } 60% { transform: translateY(0px); } }
+  @keyframes bow { 0%, 12% { transform: scale(1, 1); } 35%, 65% { transform: scale(1.02, 0.84); } 88%, 100% { transform: scale(1, 1); } }
+  @keyframes say { 0% { transform: translate(0px, 6px); opacity: 0; } 15%, 75% { opacity: 1; } 100% { transform: translate(6px, -22px); opacity: 0; } }
+  .say { font-family: 'Yu Mincho', 'Hiragino Mincho ProN', 'Noto Serif JP', serif; fill: #8a4a32; font-size: 22px; animation: say 1.8s ease-out infinite; }
+`
+  let out = svg.replace('</style>', `${css}</style>`)
+  if (kind === 'squeak') {
+    out = out
+      .replace('<g class="yuzubob">', '<text class="say" x="112" y="6">キュッ♪</text><g class="yuzubob" style="animation: hop 0.9s ease-in-out infinite">')
+      // The head may already carry the dozing nod; the bounce replaces it.
+      .replace(/<g class="head"( style="[^"]*")?/, '<g class="head" style="animation: bounce 0.9s ease-in-out infinite"')
+  } else if (working) {
+    out = out
+      .replace('<g class="kata">', '<g class="kata" style="animation: bow 3.2s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%">')
+      .replace('</style>', '  .swing { animation: none !important; transform: rotate(-8deg); } .smear-arc, .speedfx, .dust { display: none; }\n</style>')
+      .replace('<!-- fireflies, seen at night -->', '<text class="say" x="300" y="560">礼</text><!-- fireflies, seen at night -->')
+  } else {
+    out = out
+      .replace('<g class="zen">', '<g class="zen" style="animation: bow 3.2s ease-in-out infinite">')
+      .replace('<!-- fireflies, seen at night -->', '<text class="say" x="300" y="640">礼</text><!-- fireflies, seen at night -->')
+  }
+  return out
+}
+
 export function buildScene(s: Stats, nowSec: number): string {
   const five = s.limits.find(l => l.kind === 'five_hour')
   const ramPct = s.ramUsed !== undefined && s.ramTotal ? (s.ramUsed / s.ramTotal) * 100 : undefined
@@ -518,7 +586,8 @@ export function buildScene(s: Stats, nowSec: number): string {
   const ctx = clamp(s.context ?? 0)
   const glow = '<circle class="glowpulse" cx="1000" cy="175" r="190" fill="url(#lampglow)"/>'
   must(svg, glow)
-  svg = svg.replace(glow, `<circle class="glowpulse" cx="1000" cy="175" r="${Math.round(190 - ctx * 0.8)}" fill="url(#lampglow)" opacity="${(1 - ctx * 0.0075).toFixed(2)}"/>`)
+  const dark = s.daypart === 'night' ? 1 : s.daypart === 'evening' ? 0.5 : 0
+  svg = svg.replace(glow, `<circle class="glowpulse" cx="1000" cy="175" r="${Math.round(190 - ctx * 0.8 + dark * 90)}" fill="url(#lampglow)" opacity="${Math.min(1, 1 - ctx * 0.0075 + dark * 0.3).toFixed(2)}"/>`)
   const lamp = '<ellipse class="lamp" cx="1000" cy="175" rx="46" ry="56"/>'
   must(svg, lamp)
   svg = svg.replace(lamp, `${lamp}<ellipse cx="1000" cy="175" rx="46" ry="56" fill="#8a7458" opacity="${(ctx * 0.004).toFixed(2)}"/>`)
@@ -556,10 +625,20 @@ export function buildScene(s: Stats, nowSec: number): string {
   const orb = '<circle class="orb" cx="340" cy="230" r="34"/>'
   const ridge = '<path class="mtn2" d="M100 400L170 330L215 360L290 290L360 350L440 310V470H100Z"/>'
   for (const a of [sky, orb, ridge]) must(svg, a)
-  svg = svg
-    .replace(sky, `<rect x="100" y="130" width="340" height="340" fill="${lerpHex(SKY, used)}"/>${BIRDS}`)
-    .replace(orb, `<circle cx="340" cy="${(230 + used * 1.3).toFixed(0)}" r="34" fill="${lerpHex(SUN, used)}"/>`)
-    .replace(ridge, `${ridge}${PAGODA}`)
+  if (s.daypart === 'night') {
+    // At night the same story with the moon: it sinks and the sky deepens
+    // as the limit is used.
+    svg = svg
+      .replace(sky, `<rect x="100" y="130" width="340" height="340" fill="${lerpHex(NIGHT_SKY, used)}"/>${NIGHT_STARS}`)
+      .replace(orb, `<circle cx="340" cy="${(215 + used * 1.4).toFixed(0)}" r="26" fill="#f3ead2"/><circle cx="350" cy="${(209 + used * 1.4).toFixed(0)}" r="22" fill="${lerpHex(NIGHT_SKY, used)}" opacity="0.9"/>`)
+      .replace(ridge, `${ridge}${pagoda('#262b3c')}`)
+      .replace('</style>', '  .mtn { fill: #3a4360; } .mtn2 { fill: #2d3550; } .cloud { fill: #4a5470; }\n</style>')
+  } else {
+    svg = svg
+      .replace(sky, `<rect x="100" y="130" width="340" height="340" fill="${lerpHex(SKY, used)}"/>${BIRDS}`)
+      .replace(orb, `<circle cx="340" cy="${(230 + used * 1.3).toFixed(0)}" r="34" fill="${lerpHex(SUN, used)}"/>`)
+      .replace(ridge, `${ridge}${pagoda('#a88f78')}`)
+  }
 
   // While Claude works, the samurai stands and practises sword cuts.
   if (isWorking(s.work)) {
@@ -605,8 +684,30 @@ export function buildScene(s: Stats, nowSec: number): string {
   must(svg, capy)
   svg = svg.replace(capy, `${L.ram}${L.gpu}\n  ${capy}`)
 
+  // The light through the shoji onto the capybaras follows the hour: cool
+  // moonlight at night, low orange at sunset, soft pink at dawn.
+  const beam: Partial<Record<Daypart, [string, number]>> = {
+    dawn: ['#ffd6d0', 0.6],
+    evening: ['#ffbf7a', 0.65],
+    night: ['#c9d8f5', 0.45],
+  }
+  const light = beam[s.daypart ?? 'day']
+  if (light) svg = svg.replace('</style>', `  .beam-top { stop-color: ${light[0]}; stop-opacity: ${light[1]}; } .beam-bot { stop-color: ${light[0]}; }\n</style>`)
+
+  // The shoji take the same light: the paper turns with the hour, and the panes
+  // lit by RAM stay a warm glow against it, like rooms lit from inside.
+  const shoji: Partial<Record<Daypart, [string, string, number]>> = {
+    dawn: ['#fbe6e0', '#f8cfa0', 0.6],
+    evening: ['#f8dcc2', '#f5ae5c', 0.65],
+    night: ['#c3cde2', '#f6c060', 0.85],
+  }
+  const panes = shoji[s.daypart ?? 'day']
+  if (panes) svg = svg.replace('</style>', `  .paper { fill: ${panes[0]}; } .lit { fill: ${panes[1]}; opacity: ${panes[2]}; animation: none; }\n</style>`)
+
+  if (s.reaction) svg = react(svg, s.reaction, isWorking(s.work))
+
   const end = svg.lastIndexOf('</svg>')
-  svg = `${svg.slice(0, end)}${ribbon(s)}\n${svg.slice(end)}`
+  svg = `${svg.slice(0, end)}${daylight(s.daypart)}${ribbon(s)}\n${svg.slice(end)}`
 
   return keepPhase(svg, nowSec)
 }
